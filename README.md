@@ -1,4 +1,4 @@
-Insurance Premium Schedule Engine
+#Insurance Premium Schedule Engine#
 
 This project automates the generation of premium payment schedules for an insurance broker.
 The aim is to replace the slow, error-prone month-end process—previously taking 3–5 days of manual adjustments—with a fully automated, ultra-precise calculation engine.
@@ -13,7 +13,6 @@ Recalculations that must be accurate down to two decimal places
 
 Allocation of payments into a cohort-style matrix (underwritten month × payment month)
 
-
 ✨ What This Project Delivers
 
 🚀 Fully automated month-end payment schedules
@@ -27,7 +26,6 @@ Allocation of payments into a cohort-style matrix (underwritten month × payment
 📁 Audit-ready Excel extract, generated automatically at a precise time window
 
 ⚡ Faster iteration cycles using snapshotting of MySQL data for validation
-
 
 🛠️ Built With
 
@@ -45,6 +43,15 @@ Performance Analyzer & DAX Studio — performance optimisation
 
 Power BI Desktop — reporting and modelling layer
 
+📂 Repository Structure
+insurance-premium-schedule-engine/
+│
+├── powerbi/              # PBIP / dataset / report files
+├── m-scripts/            # Power Query M transformations
+├── docs/                 # Architecture, notes, and PDFs
+├── data/                 # Sample or mocked data (if needed)
+└── README.md
+
 📌 Purpose of the Repository
 
 This repo exists to:
@@ -54,7 +61,5 @@ Document the architecture used to automate premium payment allocation
 Showcase the Power Query and DAX logic used to model complex insurance events
 
 Provide a reference implementation for similar use cases
-
-Highlight how upstream logic improvements drastically improve Power BI performance
 
 Highlight how upstream logic improvements drastically improve Power BI performance
