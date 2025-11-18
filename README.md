@@ -1,4 +1,4 @@
-#Insurance Premium Schedule Engine#
+Insurance Premium Schedule Engine
 
 This project automates the generation of premium payment schedules for an insurance broker.
 The aim is to replace the slow, error-prone month-end process—previously taking 3–5 days of manual adjustments—with a fully automated, ultra-precise calculation engine.
