@@ -1,0 +1,48 @@
+table 'Trailer Measure Selection'
+	lineageTag: b79a2c95-45b3-474c-895b-074c02722107
+
+	column 'Trailer Measure Selection'
+		lineageTag: c6f88de3-65a7-4c49-a29d-0c4a83a46370
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Trailer Measure Selection Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Trailer Measure Selection Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trailer Measure Selection Fields'
+		lineageTag: c3ef1383-ac85-4065-978c-e0860cd28806
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Trailer Measure Selection Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trailer Measure Selection Order'
+		formatString: 0
+		lineageTag: 2706195b-b0d2-418c-b9f1-b0540401d616
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Trailer Measure Selection' = calculated
+		mode: import
+		source =
+				{
+				    ("Net Prem", NAMEOF('_Measures'[trailer_payment_total]), 0),
+				    ("IPT", NAMEOF('_Measures'[ipt_trailer_payment_total]), 1),
+				    ("Comm", NAMEOF('_Measures'[commission_trailer_payment_total]), 2),
+				    ("Admin", NAMEOF('_Measures'[admin_fee_trailer_payment_total]), 3)
+				}
+
+	annotation PBI_Id = 0d9548341149422e8afa2ffff62a989a
+

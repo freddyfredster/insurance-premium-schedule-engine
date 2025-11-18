@@ -1,0 +1,594 @@
+expression fnGenerateDates = ```
+		let fnDateTable = (StartDate as date, EndDate as date, FYStartMonth as number) as table =>
+		  let
+		    DayCount = Duration.Days(Duration.From(EndDate - StartDate)) + 1,
+		    Source = List.Dates(StartDate, DayCount, #duration(1, 0, 0, 0)),
+		    TableFromList = Table.FromList(Source, Splitter.SplitByNothing()),
+		    ChangedType = Table.TransformColumnTypes(TableFromList, {{"Column1", type date}}),
+		    RenamedColumns = Table.RenameColumns(ChangedType, {{"Column1", "Date"}}),
+		
+		    // Hardcoded UK Bank Holidays (2023–2025)
+		    BankHolidays = {
+		        // 2023
+		        #date(2023, 1, 2), #date(2023, 4, 7), #date(2023, 4, 10), #date(2023, 5, 1),
+		        #date(2023, 5, 8), #date(2023, 5, 29), #date(2023, 8, 28), #date(2023, 12, 25), #date(2023, 12, 26),
+		        // 2024
+		        #date(2024, 1, 1), #date(2024, 3, 29), #date(2024, 4, 1), #date(2024, 5, 6),
+		        #date(2024, 5, 27), #date(2024, 8, 26), #date(2024, 12, 25), #date(2024, 12, 26),
+		        // 2025
+		        #date(2025, 1, 1), #date(2025, 4, 18), #date(2025, 4, 21), #date(2025, 5, 5),
+		        #date(2025, 5, 26), #date(2025, 8, 25), #date(2025, 12, 25), #date(2025, 12, 26)
+		    },
+		
+		    // Add standard calendar columns
+		    InsertYear = Table.AddColumn(RenamedColumns, "Year", each Date.Year([Date]), type text),
+		    InsertYearNumber = Table.AddColumn(InsertYear, "YearNumber", each Date.Year([Date])),
+		    InsertQuarter = Table.AddColumn(InsertYearNumber, "QuarterOfYear", each Date.QuarterOfYear([Date])),
+		    InsertMonth = Table.AddColumn(InsertQuarter, "MonthOfYear", each Date.Month([Date]), type text),
+		    InsertDay = Table.AddColumn(InsertMonth, "DayOfMonth", each Date.Day([Date])),
+		    InsertDayInt = Table.AddColumn(InsertDay, "DateInt", each [YearNumber] * 10000 + Number.From([MonthOfYear]) * 100 + [DayOfMonth]),
+		    InsertMonthName = Table.AddColumn(InsertDayInt, "MonthName", each Date.ToText([Date], "MMMM"), type text),
+		    InsertCalendarMonth = Table.AddColumn(InsertMonthName, "MonthInCalendar", each Text.Start([MonthName], 3) & " " & Text.From([YearNumber])),
+		    InsertCalendarQtr = Table.AddColumn(InsertCalendarMonth, "QuarterInCalendar", each "Q" & Text.From([QuarterOfYear]) & " " & Text.From([YearNumber])),
+		    InsertDayWeek = Table.AddColumn(InsertCalendarQtr, "DayInWeek", each Date.DayOfWeek([Date], Day.Monday)),  // Monday = 0
+		    InsertDayName = Table.AddColumn(InsertDayWeek, "DayOfWeekName", each Date.ToText([Date], "dddd"), type text),
+		    InsertWeekStarting = Table.AddColumn(InsertDayName, "WeekStarting", each Date.StartOfWeek([Date], Day.Monday), type date),
+		    InsertWeekEnding = Table.AddColumn(InsertWeekStarting, "WeekEnding", each Date.EndOfWeek([Date], Day.Monday), type date),
+		    InsertWeekNumber = Table.AddColumn(InsertWeekEnding, "Week Number", each Date.WeekOfYear([Date], Day.Monday)),
+		
+		    // Add FY Start Date (Monday of the week April 1st falls in)
+		    AddFYStartDate = Table.AddColumn(InsertWeekNumber, "FYStartDate", each 
+		        let
+		            current = [Date],
+		            fyYear = if current >= #date(Date.Year(current), 4, 1) then Date.Year(current) else Date.Year(current) - 1,
+		            apr1 = #date(fyYear, 4, 1),
+		            fyStart = Date.StartOfWeek(apr1, Day.Monday)
+		        in
+		            fyStart, type date),
+		
+		    // Add FY Week Number
+		    AddFYWeekNumber = Table.AddColumn(AddFYStartDate, "FY Week Number", each 
+		        let
+		            daysBetween = Duration.Days([Date] - [FYStartDate]),
+		            weekNumber = Number.RoundDown(daysBetween / 7) + 1
+		        in
+		            if daysBetween < 0 then null else weekNumber, Int64.Type),
+		
+		    InsertMonthnYear = Table.AddColumn(AddFYWeekNumber, "MonthnYear", each [YearNumber] * 10000 + Number.From([MonthOfYear]) * 100),
+		    InsertQuarternYear = Table.AddColumn(InsertMonthnYear, "QuarternYear", each [YearNumber] * 10000 + [QuarterOfYear] * 100),
+		
+		    ChangedType1 = Table.TransformColumnTypes(InsertQuarternYear, {
+		        {"QuarternYear", Int64.Type}, {"Week Number", Int64.Type}, {"Year", type text},
+		        {"MonthnYear", Int64.Type}, {"DateInt", Int64.Type}, {"DayOfMonth", Int64.Type},
+		        {"MonthOfYear", Int64.Type}, {"QuarterOfYear", Int64.Type},
+		        {"MonthInCalendar", type text}, {"QuarterInCalendar", type text},
+		        {"DayInWeek", Int64.Type}
+		    }),
+		
+		    InsertShortYear = Table.AddColumn(ChangedType1, "ShortYear", each Text.End(Text.From([Year]), 2), type text),
+		    AddFY = Table.AddColumn(InsertShortYear, "FY", each "FY" & (if [MonthOfYear] >= FYStartMonth then Text.From(Number.From([ShortYear]) + 1) else [ShortYear])),
+		
+		    // Add IsWorkingDay (0 if weekend or bank holiday)
+		    AddWorkingDayFlag = Table.AddColumn(AddFY, "IsWorkingDay", each 
+		        if List.Contains(BankHolidays, [Date]) or [DayInWeek] >= 5 then 0 else 1, Int64.Type)
+		
+		in
+		    AddWorkingDayFlag
+		in
+		    fnDateTable
+		```
+	lineageTag: 4b09d742-a99b-429c-a8f2-5b606e2dc3ac
+	queryGroup: Functions
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Function
+
+expression 'Sample File (2)' =
+		let
+		    Source = SharePoint.Files("https://harryh.sharepoint.com/sites/HarryHallFullTeam", [ApiVersion = 15]),
+		    #"Filtered to Public Liability" = Table.SelectRows(Source, each ([Folder Path] = "https://harryh.sharepoint.com/sites/HarryHallFullTeam/Shared Documents/Power BI/1. Public Liability/")),
+		    #"Kept only .csv files" = Table.SelectRows(#"Filtered to Public Liability", each [Extension] = ".csv"),
+		    #"Sorted Date modified descending" = Table.Sort(#"Kept only .csv files",{{"Date modified", Order.Descending}}),
+		    #"Kept last modified row" = Table.FirstN(#"Sorted Date modified descending",1),
+		    Navigation1 = #"Kept last modified row"{0}[Content]
+		in
+		    Navigation1
+	lineageTag: 2a6c48de-39eb-4190-997b-d73ce20301f1
+	queryGroup: 'End Of Month\Transform File from Public Liability\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression Parameter2 = #"Sample File (2)" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File (2)", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: 21343365-d154-4498-ab86-d3d65a97b0fd
+	queryGroup: 'End Of Month\Transform File from Public Liability\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+	annotation PBI_NavigationStepName = Navigation
+
+expression 'Transform Sample File (2)' =
+		let
+		    Source = Csv.Document(Parameter2,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: 6d114675-e256-42fb-890b-4b2f90e641a9
+	queryGroup: 'End Of Month\Transform File from Public Liability'
+
+	annotation PBI_ResultType = Table
+
+expression 'Transform File (2)' =
+		let
+		    Source = (Parameter2 as binary) => let
+		    Source = Csv.Document(Parameter2,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+		in
+		    Source
+	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File (2)""}" ]
+	lineageTag: 98a34d39-59d8-4131-80ab-5a73e743f203
+	queryGroup: 'End Of Month\Transform File from Public Liability\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression 'Sample File' =
+		let
+		    Source = SharePoint.Files("https://harryh.sharepoint.com/sites/HarryHallFullTeam", [ApiVersion = 15]),
+		    #"Filtered To Personal Accident" = Table.SelectRows(Source, each [Folder Path] = "https://harryh.sharepoint.com/sites/HarryHallFullTeam/Shared Documents/Power BI/2. Personal Accident/"),
+		    #"Kept csv. files only" = Table.SelectRows(#"Filtered To Personal Accident", each [Extension] = ".csv"),
+		    #"Sorted Date modified descending" = Table.Sort(#"Kept csv. files only",{{"Date modified", Order.Descending}}),
+		    Navigation1 = #"Sorted Date modified descending"{0}[Content]
+		in
+		    Navigation1
+	lineageTag: b2513dcf-5b2d-4e00-aba7-20c70f7f6ed6
+	queryGroup: 'End Of Month\Transform File from Personal Accident\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression Parameter1 = #"Sample File" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: 5d464573-1a42-40ca-bd8d-d9e4ce04b630
+	queryGroup: 'End Of Month\Transform File from Personal Accident\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform Sample File' =
+		let
+		    Source = Csv.Document(Parameter1,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: 8310b809-190e-4dfa-9eaa-0800684e0042
+	queryGroup: 'End Of Month\Transform File from Personal Accident'
+
+	annotation PBI_ResultType = Table
+
+expression 'Transform File' =
+		let
+		    Source = (Parameter1 as binary) => let
+		    Source = Csv.Document(Parameter1,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+		in
+		    Source
+	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File""}" ]
+	lineageTag: 5e4d19ad-6b42-4717-b59a-01dc5be6a9e5
+	queryGroup: 'End Of Month\Transform File from Personal Accident\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression 'SharePoint Connection' =
+		let
+		    Source = SharePoint.Files("https://harryh.sharepoint.com/sites/HarryHallFullTeam", [ApiVersion = 15])
+		in
+		    Source
+	lineageTag: e74ad378-bfe1-4ead-87e9-f1f2be56b73a
+	queryGroup: 'SharePoint Connection'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'Sample File (3)' =
+		let
+		    Source = SharePoint.Files("https://harryh.sharepoint.com/sites/HarryHallFullTeam", [ApiVersion = 15]),
+		    #"Filtered Rows" = Table.SelectRows(Source, each [Folder Path] = "https://harryh.sharepoint.com/sites/HarryHallFullTeam/Shared Documents/Power BI/3. Fracture/"),
+		    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each [Extension] = ".csv"),
+		    #"Sorted Rows" = Table.Sort(#"Filtered Rows1",{{"Date modified", Order.Descending}}),
+		    #"Kept First Rows" = Table.FirstN(#"Sorted Rows",1),
+		    Navigation1 = #"Kept First Rows"{0}[Content]
+		in
+		    Navigation1
+	lineageTag: daefb9bc-3509-469d-a46a-02726271d636
+	queryGroup: 'End Of Month\Transform File from Fracture\Helper Queries'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Binary
+
+expression Parameter3 = #"Sample File (3)" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File (3)", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: 68cb8f26-9210-430d-ac45-8e824c7cc6e3
+	queryGroup: 'End Of Month\Transform File from Fracture\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform Sample File (3)' =
+		let
+		    Source = Csv.Document(Parameter3,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: d321a03d-0999-487b-99ab-92b1e6ef2f38
+	queryGroup: 'End Of Month\Transform File from Fracture'
+
+	annotation PBI_ResultType = Table
+
+expression 'Transform File (3)' =
+		let
+		    Source = (Parameter3 as binary) => let
+		    Source = Csv.Document(Parameter3,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+		in
+		    Source
+	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File (3)""}" ]
+	lineageTag: 4f1036c4-2957-4cdb-a7b5-1b5cfd6b2242
+	queryGroup: 'End Of Month\Transform File from Fracture\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression 'Sample File (4)' =
+		let
+		    Source = SharePoint.Files("https://harryh.sharepoint.com/sites/HarryHallFullTeam", [ApiVersion = 15]),
+		    #"Filtered Rows" = Table.SelectRows(Source, each [Folder Path] = "https://harryh.sharepoint.com/sites/HarryHallFullTeam/Shared Documents/Power BI/4. Trailer/"),
+		    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each [Extension] = ".csv"),
+		    #"Sorted Rows" = Table.Sort(#"Filtered Rows1",{{"Date modified", Order.Descending}}),
+		    #"Kept First Rows" = Table.FirstN(#"Sorted Rows",1),
+		    Navigation1 = #"Kept First Rows"{0}[Content]
+		in
+		    Navigation1
+	lineageTag: 708d7dd8-d2b2-4509-9e2b-7287c9ee4c85
+	queryGroup: 'End Of Month\Transform File from Trailer\Helper Queries'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Binary
+
+expression Parameter4 = #"Sample File (4)" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File (4)", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: de29654f-e2ce-4040-9c80-7b3e98f44f72
+	queryGroup: 'End Of Month\Transform File from Trailer\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform Sample File (4)' =
+		let
+		    Source = Csv.Document(Parameter4,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: 22ff3f38-e22b-418f-9f0e-629d423a04e8
+	queryGroup: 'End Of Month\Transform File from Trailer'
+
+	annotation PBI_ResultType = Table
+
+expression 'Transform File (4)' =
+		let
+		    Source = (Parameter4 as binary) => let
+		    Source = Csv.Document(Parameter4,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+		in
+		    Source
+	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File (4)""}" ]
+	lineageTag: a2907a2f-62e9-48cd-81f1-6b4e1955c448
+	queryGroup: 'End Of Month\Transform File from Trailer\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression 'Sample File (5)' =
+		let
+		    Source = #"SharePoint Connection",
+		    #"Filtered Rows" = Table.SelectRows(Source, each [Folder Path] = "https://harryh.sharepoint.com/sites/HarryHallFullTeam/Shared Documents/Power BI/5. Vet/"),
+		    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each [Extension] = ".csv"),
+		    #"Sorted Rows" = Table.Sort(#"Filtered Rows1",{{"Date modified", Order.Descending}}),
+		    #"Kept First Rows" = Table.FirstN(#"Sorted Rows",1),
+		    Navigation1 = #"Kept First Rows"{0}[Content]
+		in
+		    Navigation1
+	lineageTag: 1d2f3aef-f6fa-441d-8dc8-6aa66d44a22f
+	queryGroup: 'End Of Month\Transform File from Vet\Helper Queries'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Binary
+
+expression Parameter5 = #"Sample File (5)" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File (5)", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: 324ea40e-dc54-46a1-9ddc-4e0705f66f62
+	queryGroup: 'End Of Month\Transform File from Vet\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform Sample File (5)' =
+		let
+		    Source = Csv.Document(Parameter5,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: b446473d-af6b-4e21-ba33-f61ba31758c6
+	queryGroup: 'End Of Month\Transform File from Vet'
+
+	annotation PBI_ResultType = Table
+
+expression 'Transform File (5)' =
+		let
+		    Source = (Parameter5 as binary) => let
+		    Source = Csv.Document(Parameter5,[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+		in
+		    Source
+	mAttributes: [ FunctionQueryBinding = "{""exemplarFormulaName"":""Transform Sample File (5)""}" ]
+	lineageTag: c4be075f-a4c5-4d68-87de-8daf2ae19ea6
+	queryGroup: 'End Of Month\Transform File from Vet\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression Memberships_bdx_31_08_25 = ```
+		let
+		    Source = PowerPlatform.Dataflows(null),
+		    Workspaces = Source{[Id="Workspaces"]}[Data],
+		    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+		    #"7c4cf12a-0656-4c31-b12d-c548854ee8d0" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="7c4cf12a-0656-4c31-b12d-c548854ee8d0"]}[Data],
+		    #"Memberships_bdx_31 08 25_" = #"7c4cf12a-0656-4c31-b12d-c548854ee8d0"{[entity="Memberships_bdx_31 08 25",version=""]}[Data],
+		#"Filtered Rows1" = Table.SelectRows(#"Memberships_bdx_31 08 25_", each [policy_start_date] >= #date(2024, 2, 1)),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows1",{"id", "policy_start_date", "reference", "cancel_date", "days_used", "days_paid", "interval","type",  "annual_cost", "liability_net_premium_pl_excl_comm_ipt", "pl_adj", "ipt_liability_pl", "liability_net_premium_pa_excl_comm_iptcost", "ipt_liability_pa", "pa_adj", "commision_on_pl", "commision_on_pa", "fracture_net_premium", "fracture_adj", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture"}),
+		    Calculated_annual_pl_premium = Table.AddColumn(#"Removed Other Columns", "annual_pl_premium", each ([liability_net_premium_pl_excl_comm_ipt]/0.7)*0.8, type number),
+		    Calculated_annual_pa_premium = Table.AddColumn(Calculated_annual_pl_premium, "annual_pa_premium", each ([liability_net_premium_pa_excl_comm_iptcost]/0.8)*0.9, type number),
+		    Calculated_annual_fr_premium = Table.AddColumn(Calculated_annual_pa_premium, "annual_fr_premium", each ([fracture_net_premium]/0.75)*0.85, type number),
+		    #"Removed Columns" = Table.RemoveColumns(Calculated_annual_fr_premium,{"liability_net_premium_pl_excl_comm_ipt", "pl_adj", "liability_net_premium_pa_excl_comm_iptcost", "pa_adj", "fracture_net_premium", "fracture_adj"}),
+		    #"Added Conditional Column" = Table.AddColumn(#"Removed Columns", "annual_cost1", each if [days_paid] >= 365 then 0 else [annual_cost],type number),
+		    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "ipt_liability_pl1", each if [days_paid] >= 365 then 0 else [ipt_liability_pl], type number),
+		    #"Added Conditional Column2" = Table.AddColumn(#"Added Conditional Column1", "ipt_liability_pa1", each if [days_paid] >= 365 then 0 else [ipt_liability_pa], type number),
+		    #"Added Conditional Column3" = Table.AddColumn(#"Added Conditional Column2", "commision_on_pl1", each if [days_paid] >= 365 then 0 else [commision_on_pl], type number),
+		    #"Added Conditional Column4" = Table.AddColumn(#"Added Conditional Column3", "commision_on_pa1", each if [days_paid] >= 365 then 0 else [commision_on_pa], type number),
+		    #"Added Conditional Column5" = Table.AddColumn(#"Added Conditional Column4", "ipt_fracture1", each if [days_paid] >= 365 then 0 else [ipt_fracture], type number),
+		    #"Added Conditional Column6" = Table.AddColumn(#"Added Conditional Column5", "commission_fracture1", each if [days_paid] >= 365 then 0 else [commission_fracture], type number),
+		    #"Added Conditional Column7" = Table.AddColumn(#"Added Conditional Column6", "admin_fee1", each if [days_paid] >= 365 then 0 else [admin_fee], type number),
+		    #"Added Conditional Column8" = Table.AddColumn(#"Added Conditional Column7", "admin_fee_fracture1", each if [days_paid] >= 365 then 0 else [admin_fee_fracture], type number),
+		    #"Added Conditional Column9" = Table.AddColumn(#"Added Conditional Column8", "annual_pl_premium1", each if [days_paid] >= 365 then 0 else [annual_pl_premium], type number),
+		    #"Added Conditional Column10" = Table.AddColumn(#"Added Conditional Column9", "annual_pa_premium1", each if [days_paid] >= 365 then 0 else [annual_pa_premium], type number),
+		    #"Added Conditional Column11" = Table.AddColumn(#"Added Conditional Column10", "annual_fr_premium1", each if [days_paid] >= 365 then 0 else [annual_fr_premium], type number),
+		    #"Removed Columns1" = Table.RemoveColumns(#"Added Conditional Column11",{"annual_cost", "ipt_liability_pl", "ipt_liability_pa", "commision_on_pl", "commision_on_pa", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture", "annual_pl_premium", "annual_pa_premium", "annual_fr_premium"}),
+		    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns1",{{"annual_cost1", "annual_cost"}, {"ipt_liability_pl1", "ipt_liability_pl"}, {"ipt_liability_pa1", "ipt_liability_pa"}, {"commision_on_pl1", "commision_on_pl"}, {"commision_on_pa1", "commision_on_pa"}, {"ipt_fracture1", "ipt_fracture"}, {"commission_fracture1", "commission_fracture"}, {"admin_fee1", "admin_fee"}, {"admin_fee_fracture1", "admin_fee_fracture"}, {"annual_pl_premium1", "annual_pl_premium"}, {"annual_pa_premium1", "annual_pa_premium"}, {"annual_fr_premium1", "annual_fr_premium"}}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Renamed Columns1",{{"cancel_date", "cancelled_date"}, {"ipt_liability_pa", "ipt_pa"}, {"ipt_liability_pl", "ipt_pl"}}),
+		    #"Added EffectiveDate column" = Table.AddColumn(#"Renamed Columns", "Effective_Date", each 
+		    if [cancelled_date] = null or [cancelled_date] < [policy_start_date] then 
+		        [policy_start_date] 
+		    else 
+		        [cancelled_date], 
+		    type date
+		),
+		    #"Added PolicyEndDate column" = Table.AddColumn(#"Added EffectiveDate column", "policy_end_date", each Date.EndOfMonth(Date.AddMonths([policy_start_date], 11)), type date),
+		    #"Grouped Rows" = Table.Group(#"Added PolicyEndDate column", {"id", "reference", "type"}, {{"Count", each Table.Max(_,"policy_start_date")}}),
+		    #"Expanded Count" = Table.ExpandRecordColumn(#"Grouped Rows", "Count", {"policy_start_date", "cancelled_date", "days_used", "days_paid", "interval", "annual_cost", "ipt_pl", "ipt_pa", "commision_on_pl", "commision_on_pa", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture", "annual_pl_premium", "annual_pa_premium", "annual_fr_premium", "Effective_Date", "policy_end_date"}, {"policy_start_date", "cancelled_date", "days_used", "days_paid", "interval", "annual_cost", "ipt_pl", "ipt_pa", "commision_on_pl", "commision_on_pa", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture", "annual_pl_premium", "annual_pa_premium", "annual_fr_premium", "Effective_Date", "policy_end_date"}),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Count",{{"type", type text}, {"policy_start_date", type date}, {"cancelled_date", type date}, {"days_used", Int64.Type}, {"days_paid", Int64.Type}, {"interval", type text}, {"annual_cost", type number}, {"ipt_pl", type number}, {"ipt_pa", type number}, {"commision_on_pl", type number}, {"commision_on_pa", type number}, {"ipt_fracture", type number}, {"commission_fracture", type number}, {"admin_fee", type number}, {"admin_fee_fracture", type number}, {"annual_pl_premium", type number}, {"annual_pa_premium", type number}, {"annual_fr_premium", type number}, {"Effective_Date", type date}, {"policy_end_date", type date}})
+		in
+		    #"Changed Type"
+		```
+	lineageTag: 91b32a7c-8399-4489-9ec7-b293816e570a
+	queryGroup: 'Base Tables'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Trailer_bdx_31_08_25 = ```
+		let
+		    Source = PowerPlatform.Dataflows(null),
+		    Workspaces = Source{[Id="Workspaces"]}[Data],
+		    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+		    #"7c4cf12a-0656-4c31-b12d-c548854ee8d0" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="7c4cf12a-0656-4c31-b12d-c548854ee8d0"]}[Data],
+		    #"Trailer_bdx_31 08 25_" = #"7c4cf12a-0656-4c31-b12d-c548854ee8d0"{[entity="Trailer_bdx_31 08 25",version=""]}[Data],
+		    #"Filtered PolicyStartDate > 01/01/24" = Table.SelectRows(#"Trailer_bdx_31 08 25_", each [policy_start_date] >= #date(2023, 1, 1)),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered PolicyStartDate > 01/01/24",{"id","policy_start_date", "reference", "cancelled_date", "days_used", "days_paid", "interval", "type", "annual_cost", "annual_premium_excl_ipt", "annual_net_premium", "ipt", "annual_commision", "admin_fee"}),
+		    #"Replaced Cancel by Cancelled" = Table.ReplaceValue(#"Removed Other Columns","Cancel","Cancelled",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Renewed by Renewal" = Table.ReplaceValue(#"Replaced Cancel by Cancelled","Renewed","Renewal",Replacer.ReplaceValue,{"type"}),
+		    #"Added Conditional Column" = Table.AddColumn(#"Replaced Renewed by Renewal", "annual_cost_temp", each if [days_paid] >= 365 then 0 else [annual_cost], type number),
+		    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "annual_premium_excl_ipt_temp", each if [days_paid] >= 365 then 0 else [annual_premium_excl_ipt], type number),
+		    #"Added Conditional Column2" = Table.AddColumn(#"Added Conditional Column1", "annual_net_premium_temp", each if [days_paid] >= 365 then 0 else [annual_net_premium], type number),
+		    #"Added Conditional Column3" = Table.AddColumn(#"Added Conditional Column2", "ipt_temp", each if [days_paid] >= 365 then 0 else [ipt], type number),
+		    #"Added Conditional Column4" = Table.AddColumn(#"Added Conditional Column3", "annual_commision_temp", each if [days_paid] >= 365 then 0 else [annual_commision], type number),
+		    #"Added Conditional Column5" = Table.AddColumn(#"Added Conditional Column4", "admin_fee_temp", each if [days_paid] >= 365 then 0 else [admin_fee], type number),
+		    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column5",{"annual_cost", "annual_premium_excl_ipt", "annual_net_premium", "ipt", "annual_commision", "admin_fee"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"annual_cost_temp", "annual_cost"}, {"annual_premium_excl_ipt_temp", "annual_premium_excl_ipt"}, {"annual_net_premium_temp", "annual_net_premium"}, {"ipt_temp", "ipt"}, {"annual_commision_temp", "annual_commision"}, {"admin_fee_temp", "admin_fee"}}),
+		    #"Added EffectiveDate column" = Table.AddColumn(#"Renamed Columns", "Effective_Date", each 
+		    if [cancelled_date] = null or [cancelled_date] < [policy_start_date] then 
+		        [policy_start_date] 
+		    else 
+		        [cancelled_date], 
+		    type date
+		),
+		    #"Added PolicyEndDate column" = Table.AddColumn(#"Added EffectiveDate column", "policy_end_date", each Date.EndOfMonth(Date.AddMonths([policy_start_date], 11)), type date)
+		    in
+		    #"Added PolicyEndDate column"
+		```
+	lineageTag: 7f3f1754-fb58-4594-bb86-bf5668ad1b78
+	queryGroup: 'Base Tables'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Vet_bdx_31_08_25 = ```
+		let
+		    Source = PowerPlatform.Dataflows(null),
+		    Workspaces = Source{[Id="Workspaces"]}[Data],
+		    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+		    #"7c4cf12a-0656-4c31-b12d-c548854ee8d0" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="7c4cf12a-0656-4c31-b12d-c548854ee8d0"]}[Data],
+		    #"Vet_bdx_31 08 25_" = #"7c4cf12a-0656-4c31-b12d-c548854ee8d0"{[entity="Vet_bdx_31 08 25",version=""]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(#"Vet_bdx_31 08 25_", each [policy_start_date] >= #date(2023, 1, 1)),
+		    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows","Cancel","Cancelled",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Vet Renew","Renewal",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Renew","Renewal",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","Vet Cover ReActivate","ReActivate",Replacer.ReplaceText,{"type"}),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Replaced Value3",{"id","policy_start_date", "reference", "cancelled_date", "interval", "type", "days_used", "days_paid", "annual_cost", "annual_vet_premium_excl_ipt", "annual_vet_premium_incl_ipt_commision", "annual_vet_net_premium", "ipt", "annual_vet_commision", "admin_fee"}),
+		    #"Added Conditional Column" = Table.AddColumn(#"Removed Other Columns", "annual_cost_temp", each if [days_paid] >= 366 then 0 else [annual_cost], type number),
+		    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "annual_vet_premium_excl_ipt_temp", each if [days_paid] >= 366 then 0 else [annual_vet_premium_excl_ipt], type number),
+		    #"Added Conditional Column2" = Table.AddColumn(#"Added Conditional Column1", "annual_vet_premium_incl_ipt_commision_temp", each if [days_paid] >= 366 then 0 else [annual_vet_premium_incl_ipt_commision], type number),
+		    #"Added Conditional Column3" = Table.AddColumn(#"Added Conditional Column2", "annual_vet_net_premium_t", each if [days_paid] >= 366 then 0 else [annual_vet_net_premium], type number),
+		    #"Added Conditional Column4" = Table.AddColumn(#"Added Conditional Column3", "ipt_temp", each if [days_paid] = 366 then 0 else [ipt], type number),
+		    #"Added Conditional Column5" = Table.AddColumn(#"Added Conditional Column4", "annual_vet_commision_temp", each if [days_paid] >= 366 then 0 else [annual_vet_commision], type number),
+		    #"Added Conditional Column6" = Table.AddColumn(#"Added Conditional Column5", "admin_fee_temp", each if [days_paid] >= 366 then 0 else [admin_fee], type number),
+		    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column6",{"annual_cost", "annual_vet_premium_excl_ipt", "annual_vet_premium_incl_ipt_commision", "annual_vet_net_premium", "ipt", "annual_vet_commision", "admin_fee"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"annual_cost_temp", "annual_cost"}, {"annual_vet_premium_excl_ipt_temp", "annual_vet_premium_excl_ipt"}, {"annual_vet_premium_incl_ipt_commision_temp", "annual_vet_premium_incl_ipt_commision"}, {"annual_vet_net_premium_t", "annual_vet_net_premium"}, {"ipt_temp", "ipt"}, {"annual_vet_commision_temp", "annual_vet_commision"}, {"admin_fee_temp", "admin_fee"}}),
+		    #"Added EffectiveDate column" = Table.AddColumn(#"Renamed Columns", "Effective_Date", each 
+		    if [cancelled_date] = null or [cancelled_date] < [policy_start_date] then 
+		        [policy_start_date] 
+		    else 
+		        [cancelled_date], 
+		    type date
+		),
+		    #"Added PolicyEndDate column" = Table.AddColumn(#"Added EffectiveDate column", "policy_end_date", each Date.EndOfMonth(Date.AddMonths([policy_start_date], 11)), type date),
+		    #"Renamed Columns1" = Table.RenameColumns(#"Added PolicyEndDate column",{{"annual_vet_commision", "annual_vet_commission"}})
+		in
+		    #"Renamed Columns1"
+		```
+	lineageTag: 18dbf7a0-8e3b-4ded-a86d-e0fbfc14af59
+	queryGroup: 'Base Tables'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Fact_Trailer_bdx_base = ```
+		let
+		    Source = PowerPlatform.Dataflows(null),
+		    Workspaces = Source{[Id="Workspaces"]}[Data],
+		    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+		    #"645fa187-92f2-4eb3-abb0-78093fcd9e2e" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="645fa187-92f2-4eb3-abb0-78093fcd9e2e"]}[Data],
+		    Fact_Trailer_bdx_ = #"645fa187-92f2-4eb3-abb0-78093fcd9e2e"{[entity="Fact_Trailer_bdx",version=""]}[Data],
+		    #"Filtered PolicyStartDate > 01/01/24" = Table.SelectRows(Fact_Trailer_bdx_, each [policy_start_date] >= #date(2023, 1, 1)),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered PolicyStartDate > 01/01/24",{"id","policy_start_date", "reference", "cancelled_date", "days_used", "days_paid", "interval", "type", "annual_cost", "annual_premium_excl_ipt", "annual_net_premium", "ipt", "annual_commision", "admin_fee"}),
+		    #"Replaced Cancel by Cancelled" = Table.ReplaceValue(#"Removed Other Columns","Cancel","Cancelled",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Renewed by Renewal" = Table.ReplaceValue(#"Replaced Cancel by Cancelled","Renewed","Renewal",Replacer.ReplaceValue,{"type"}),
+		    #"Added Conditional Column" = Table.AddColumn(#"Replaced Renewed by Renewal", "annual_cost_temp", each if [days_paid] >= 365 then 0 else [annual_cost], type number),
+		    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "annual_premium_excl_ipt_temp", each if [days_paid] >= 365 then 0 else [annual_premium_excl_ipt], type number),
+		    #"Added Conditional Column2" = Table.AddColumn(#"Added Conditional Column1", "annual_net_premium_temp", each if [days_paid] >= 365 then 0 else [annual_net_premium], type number),
+		    #"Added Conditional Column3" = Table.AddColumn(#"Added Conditional Column2", "ipt_temp", each if [days_paid] >= 365 then 0 else [ipt], type number),
+		    #"Added Conditional Column4" = Table.AddColumn(#"Added Conditional Column3", "annual_commision_temp", each if [days_paid] >= 365 then 0 else [annual_commision], type number),
+		    #"Added Conditional Column5" = Table.AddColumn(#"Added Conditional Column4", "admin_fee_temp", each if [days_paid] >= 365 then 0 else [admin_fee], type number),
+		    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column5",{"annual_cost", "annual_premium_excl_ipt", "annual_net_premium", "ipt", "annual_commision", "admin_fee"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"annual_cost_temp", "annual_cost"}, {"annual_premium_excl_ipt_temp", "annual_premium_excl_ipt"}, {"annual_net_premium_temp", "annual_net_premium"}, {"ipt_temp", "ipt"}, {"annual_commision_temp", "annual_commision"}, {"admin_fee_temp", "admin_fee"}}),
+		    #"Added EffectiveDate column" = Table.AddColumn(#"Renamed Columns", "Effective_Date", each 
+		    if [cancelled_date] = null or [cancelled_date] < [policy_start_date] then 
+		        [policy_start_date] 
+		    else 
+		        [cancelled_date], 
+		    type date
+		),
+		    #"Added PolicyEndDate column" = Table.AddColumn(#"Added EffectiveDate column", "policy_end_date", each Date.EndOfMonth(Date.AddMonths([policy_start_date], 11)), type date)
+		    in
+		    #"Added PolicyEndDate column"
+		```
+	lineageTag: 85684a07-58ae-496c-bd5c-c0e90e346795
+	queryGroup: 'Base Tables'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Fact_Memberships_bdx_base = ```
+		let
+		    Source = PowerPlatform.Dataflows(null),
+		    Workspaces = Source{[Id="Workspaces"]}[Data],
+		    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+		    #"645fa187-92f2-4eb3-abb0-78093fcd9e2e" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="645fa187-92f2-4eb3-abb0-78093fcd9e2e"]}[Data],
+		    Fact_Membership_bdx_ = #"645fa187-92f2-4eb3-abb0-78093fcd9e2e"{[entity="Fact_Membership_bdx",version=""]}[Data],
+		    #"Filtered Rows1" = Table.SelectRows(Fact_Membership_bdx_, each [policy_start_date] >= #date(2023, 1, 1)),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Filtered Rows1",{"id","policy_start_date", "reference", "cancel_date", "days_used", "days_paid", "interval","type",  "annual_cost", "liability_net_premium_pl_excl_comm_ipt", "pl_adj", "ipt_liability_pl", "liability_net_premium_pa_excl_comm_iptcost", "ipt_liability_pa", "pa_adj", "commision_on_pl", "commision_on_pa", "fracture_net_premium", "fracture_adj", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture"}),
+		    Calculated_annual_pl_premium = Table.AddColumn(#"Removed Other Columns", "annual_pl_premium", each ([liability_net_premium_pl_excl_comm_ipt]/0.7)*0.8, type number),
+		    Calculated_annual_pa_premium = Table.AddColumn(Calculated_annual_pl_premium, "annual_pa_premium", each ([liability_net_premium_pa_excl_comm_iptcost]/0.8)*0.9, type number),
+		    Calculated_annual_fr_premium = Table.AddColumn(Calculated_annual_pa_premium, "annual_fr_premium", each ([fracture_net_premium]/0.75)*0.85, type number),
+		    #"Removed Columns" = Table.RemoveColumns(Calculated_annual_fr_premium,{"liability_net_premium_pl_excl_comm_ipt", "pl_adj", "liability_net_premium_pa_excl_comm_iptcost", "pa_adj", "fracture_net_premium", "fracture_adj"}),
+		    #"Added Conditional Column" = Table.AddColumn(#"Removed Columns", "annual_cost1", each if [days_paid] >= 365 then 0 else [annual_cost],type number),
+		    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "ipt_liability_pl1", each if [days_paid] >= 365 then 0 else [ipt_liability_pl], type number),
+		    #"Added Conditional Column2" = Table.AddColumn(#"Added Conditional Column1", "ipt_liability_pa1", each if [days_paid] >= 365 then 0 else [ipt_liability_pa], type number),
+		    #"Added Conditional Column3" = Table.AddColumn(#"Added Conditional Column2", "commision_on_pl1", each if [days_paid] >= 365 then 0 else [commision_on_pl], type number),
+		    #"Added Conditional Column4" = Table.AddColumn(#"Added Conditional Column3", "commision_on_pa1", each if [days_paid] >= 365 then 0 else [commision_on_pa], type number),
+		    #"Added Conditional Column5" = Table.AddColumn(#"Added Conditional Column4", "ipt_fracture1", each if [days_paid] >= 365 then 0 else [ipt_fracture], type number),
+		    #"Added Conditional Column6" = Table.AddColumn(#"Added Conditional Column5", "commission_fracture1", each if [days_paid] >= 365 then 0 else [commission_fracture], type number),
+		    #"Added Conditional Column7" = Table.AddColumn(#"Added Conditional Column6", "admin_fee1", each if [days_paid] >= 365 then 0 else [admin_fee], type number),
+		    #"Added Conditional Column8" = Table.AddColumn(#"Added Conditional Column7", "admin_fee_fracture1", each if [days_paid] >= 365 then 0 else [admin_fee_fracture], type number),
+		    #"Added Conditional Column9" = Table.AddColumn(#"Added Conditional Column8", "annual_pl_premium1", each if [days_paid] >= 365 then 0 else [annual_pl_premium], type number),
+		    #"Added Conditional Column10" = Table.AddColumn(#"Added Conditional Column9", "annual_pa_premium1", each if [days_paid] >= 365 then 0 else [annual_pa_premium], type number),
+		    #"Added Conditional Column11" = Table.AddColumn(#"Added Conditional Column10", "annual_fr_premium1", each if [days_paid] >= 365 then 0 else [annual_fr_premium], type number),
+		    #"Removed Columns1" = Table.RemoveColumns(#"Added Conditional Column11",{"annual_cost", "ipt_liability_pl", "ipt_liability_pa", "commision_on_pl", "commision_on_pa", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture", "annual_pl_premium", "annual_pa_premium", "annual_fr_premium"}),
+		    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns1",{{"annual_cost1", "annual_cost"}, {"ipt_liability_pl1", "ipt_liability_pl"}, {"ipt_liability_pa1", "ipt_liability_pa"}, {"commision_on_pl1", "commision_on_pl"}, {"commision_on_pa1", "commision_on_pa"}, {"ipt_fracture1", "ipt_fracture"}, {"commission_fracture1", "commission_fracture"}, {"admin_fee1", "admin_fee"}, {"admin_fee_fracture1", "admin_fee_fracture"}, {"annual_pl_premium1", "annual_pl_premium"}, {"annual_pa_premium1", "annual_pa_premium"}, {"annual_fr_premium1", "annual_fr_premium"}}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Renamed Columns1",{{"cancel_date", "cancelled_date"}, {"ipt_liability_pa", "ipt_pa"}, {"ipt_liability_pl", "ipt_pl"}}),
+		    #"Added EffectiveDate column" = Table.AddColumn(#"Renamed Columns", "Effective_Date", each 
+		    if [cancelled_date] = null or [cancelled_date] < [policy_start_date] then 
+		        [policy_start_date] 
+		    else 
+		        [cancelled_date], 
+		    type date
+		),
+		    #"Added PolicyEndDate column" = Table.AddColumn(#"Added EffectiveDate column", "policy_end_date", each Date.EndOfMonth(Date.AddMonths([policy_start_date], 11)), type date),
+		    #"Grouped Rows" = Table.Group(#"Added PolicyEndDate column", {"id","reference", "type"}, {{"Count", each Table.Max(_,"policy_start_date")}}),
+		    #"Expanded Count" = Table.ExpandRecordColumn(#"Grouped Rows", "Count", {"policy_start_date", "cancelled_date", "days_used", "days_paid", "interval", "annual_cost", "ipt_pl", "ipt_pa", "commision_on_pl", "commision_on_pa", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture", "annual_pl_premium", "annual_pa_premium", "annual_fr_premium", "Effective_Date", "policy_end_date"}, {"policy_start_date", "cancelled_date", "days_used", "days_paid", "interval", "annual_cost", "ipt_pl", "ipt_pa", "commision_on_pl", "commision_on_pa", "ipt_fracture", "commission_fracture", "admin_fee", "admin_fee_fracture", "annual_pl_premium", "annual_pa_premium", "annual_fr_premium", "Effective_Date", "policy_end_date"}),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Count",{{"type", type text}, {"policy_start_date", type date}, {"cancelled_date", type date}, {"days_used", Int64.Type}, {"days_paid", Int64.Type}, {"interval", type text}, {"annual_cost", type number}, {"ipt_pl", type number}, {"ipt_pa", type number}, {"commision_on_pl", type number}, {"commision_on_pa", type number}, {"ipt_fracture", type number}, {"commission_fracture", type number}, {"admin_fee", type number}, {"admin_fee_fracture", type number}, {"annual_pl_premium", type number}, {"annual_pa_premium", type number}, {"annual_fr_premium", type number}, {"Effective_Date", type date}, {"policy_end_date", type date}})
+		in
+		    #"Changed Type"
+		```
+	lineageTag: 995bb84a-a054-49dc-bb9e-46d1c3eadb30
+	queryGroup: 'Base Tables'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression Fact_Vet_bbx_base = ```
+		let
+		    Source = PowerPlatform.Dataflows(null),
+		    Workspaces = Source{[Id="Workspaces"]}[Data],
+		    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+		    #"645fa187-92f2-4eb3-abb0-78093fcd9e2e" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="645fa187-92f2-4eb3-abb0-78093fcd9e2e"]}[Data],
+		    Fact_Vet_bbx_ = #"645fa187-92f2-4eb3-abb0-78093fcd9e2e"{[entity="Fact_Vet_bbx",version=""]}[Data],
+		    #"Filtered Rows" = Table.SelectRows(Fact_Vet_bbx_, each [policy_start_date] >= #date(2023, 1, 1)),
+		    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows","Cancel","Cancelled",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Vet Renew","Renewal",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Renew","Renewal",Replacer.ReplaceValue,{"type"}),
+		    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","Vet Cover ReActivate","ReActivate",Replacer.ReplaceText,{"type"}),
+		    #"Removed Other Columns" = Table.SelectColumns(#"Replaced Value3",{"id","policy_start_date", "reference", "cancelled_date", "interval", "type", "days_used", "days_paid", "annual_cost", "annual_vet_premium_excl_ipt", "annual_vet_premium_incl_ipt_commision", "annual_vet_net_premium", "ipt", "annual_vet_commision", "admin_fee"}),
+		    #"Added Conditional Column" = Table.AddColumn(#"Removed Other Columns", "annual_cost_temp", each if [days_paid] >= 365 then 0 else [annual_cost], type number),
+		    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "annual_vet_premium_excl_ipt_temp", each if [days_paid] >= 365 then 0 else [annual_vet_premium_excl_ipt], type number),
+		    #"Added Conditional Column2" = Table.AddColumn(#"Added Conditional Column1", "annual_vet_premium_incl_ipt_commision_temp", each if [days_paid] >= 365 then 0 else [annual_vet_premium_incl_ipt_commision], type number),
+		    #"Added Conditional Column3" = Table.AddColumn(#"Added Conditional Column2", "annual_vet_net_premium_t", each if [days_paid] >= 365 then 0 else [annual_vet_net_premium], type number),
+		    #"Added Conditional Column4" = Table.AddColumn(#"Added Conditional Column3", "ipt_temp", each if [days_paid] = 365 then 0 else [ipt], type number),
+		    #"Added Conditional Column5" = Table.AddColumn(#"Added Conditional Column4", "annual_vet_commision_temp", each if [days_paid] >= 365 then 0 else [annual_vet_commision], type number),
+		    #"Added Conditional Column6" = Table.AddColumn(#"Added Conditional Column5", "admin_fee_temp", each if [days_paid] >= 365 then 0 else [admin_fee], type number),
+		    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column6",{"annual_cost", "annual_vet_premium_excl_ipt", "annual_vet_premium_incl_ipt_commision", "annual_vet_net_premium", "ipt", "annual_vet_commision", "admin_fee"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"annual_cost_temp", "annual_cost"}, {"annual_vet_premium_excl_ipt_temp", "annual_vet_premium_excl_ipt"}, {"annual_vet_premium_incl_ipt_commision_temp", "annual_vet_premium_incl_ipt_commision"}, {"annual_vet_net_premium_t", "annual_vet_net_premium"}, {"ipt_temp", "ipt"}, {"annual_vet_commision_temp", "annual_vet_commision"}, {"admin_fee_temp", "admin_fee"}}),
+		    #"Added EffectiveDate column" = Table.AddColumn(#"Renamed Columns", "Effective_Date", each 
+		    if [cancelled_date] = null or [cancelled_date] < [policy_start_date] then 
+		        [policy_start_date] 
+		    else 
+		        [cancelled_date], 
+		    type date
+		),
+		    #"Added PolicyEndDate column" = Table.AddColumn(#"Added EffectiveDate column", "policy_end_date", each Date.EndOfMonth(Date.AddMonths([policy_start_date], 11)), type date),
+		    #"Renamed Columns1" = Table.RenameColumns(#"Added PolicyEndDate column",{{"annual_vet_commision", "annual_vet_commission"}})
+		in
+		    #"Renamed Columns1"
+		```
+	lineageTag: 5aaff947-5910-4f9d-b5e9-3d3bb04f6705
+	queryGroup: 'Base Tables'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

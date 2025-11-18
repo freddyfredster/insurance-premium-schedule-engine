@@ -1,0 +1,353 @@
+relationship 8c1150ab-47ba-48be-ab6f-612b919af0d9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Customers.date_of_birth
+	toColumn: LocalDateTable_38d78f9e-e5cb-463d-bc89-34853aff5c25.Date
+
+relationship 81f9dba8-21c6-4342-adb4-8d1b9a2e3c58
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Customers.created_date
+	toColumn: LocalDateTable_91498a6b-6fe2-4958-84c8-8dee41532555.Date
+
+relationship bf341311-4284-4f05-bcb4-54a4ca735288
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Customers.updated_date
+	toColumn: LocalDateTable_e95b8c58-adb2-425f-a05b-00ba1fd19d45.Date
+
+relationship 0d0062cd-49de-4521-a300-5c94cc1eab2b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.created_date
+	toColumn: LocalDateTable_637a73f0-9a08-40c0-a9aa-367421bbd40a.Date
+
+relationship 403c3375-159e-4b81-80ef-e601402a58d9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.updated_date
+	toColumn: LocalDateTable_b00f3301-4eed-4fb3-b380-a5240db3d98f.Date
+
+relationship 78737f3e-cdf5-41d7-bb52-492fb07d5442
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.cancel_date
+	toColumn: LocalDateTable_cade877c-05bd-4c80-a9be-5258287b38e5.Date
+
+relationship 8c75dac2-d324-4dc1-b24c-2e0f3a6c14d2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.joining_date
+	toColumn: LocalDateTable_7e6084fc-2821-4bec-be93-97e68f10bbb9.Date
+
+relationship 57b6a409-e822-407b-b21e-1fe0ec3bfe33
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.upgrade_date
+	toColumn: LocalDateTable_057a32ee-edb5-4cc8-a301-2292ca524ca1.Date
+
+relationship 43424d26-b05c-44ef-8c16-85f55edbd2b1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.auto_renew_cancel_date
+	toColumn: LocalDateTable_b75ba53f-dea8-4682-aed1-ff75320733c4.Date
+
+relationship 95fe6b5d-88d2-4c11-870d-db1e0006319f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fact_Cust_Payments.updated_date
+	toColumn: LocalDateTable_1197c9af-2ff6-4419-b31a-08d02d4ee913.Date
+
+relationship 5caec139-54d1-73a7-42a5-431b96611e7c
+	fromColumn: fact_Cust_Payments.policy_id
+	toColumn: dim_Memberships.policy_id
+
+relationship ca4e7e0a-35b2-6208-0b68-d7a29f1d213c
+	fromColumn: dim_Memberships.customer_id
+	toColumn: dim_Customers.customer_id
+
+relationship fdd0aabd-021a-4605-a15d-50456921c9f2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_Memberships.start_date
+	toColumn: LocalDateTable_2d7a4fa2-acd2-4c86-b52f-696fd9934f2d.Date
+
+relationship d55b80b9-64b0-4c99-a6f2-1e2d308d29b3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fact_Cust_Payments.actioned_date
+	toColumn: LocalDateTable_8c656c71-ad27-46c5-a306-ca7f7a72bddb.Date
+
+relationship f1a6be7f-6b78-4739-af92-d70ae20dfdf2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fact_Cust_Payments.created_date
+	toColumn: LocalDateTable_05301055-c059-45ee-a2f0-a0c9d7f4a95e.Date
+
+relationship 3cd4bf70-67c7-4293-9d8b-10af6e4a2b20
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fact_Cust_Payments.payment_date
+	toColumn: LocalDateTable_33d661fc-9d71-42af-aa67-8e43b6a46415.Date
+
+relationship ec44b394-68e1-434b-bd91-b55222bb3bfb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_UWDate.Date
+	toColumn: LocalDateTable_4c979da6-aa0a-4698-bb49-e4c5ac257015.Date
+
+relationship 6a5633e7-bc92-4951-ba65-ea9696f4f47a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_UWDate.WeekStarting
+	toColumn: LocalDateTable_c883f96d-8754-480b-bcc1-a78aa36d9977.Date
+
+relationship 9ab049ef-1847-4bf3-80e1-e3d05a0ff38b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_UWDate.WeekEnding
+	toColumn: LocalDateTable_99f16fc8-2097-41fe-a289-6054b110d75b.Date
+
+relationship 73372e55-a14f-433c-bbb0-0877d2540be2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_UWDate.FYStartDate
+	toColumn: LocalDateTable_405d542b-6a9c-401f-a4e1-7a439800d7be.Date
+
+relationship 90fe6728-9936-41a1-a669-adacadf30178
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_UWDate.MonthStart
+	toColumn: LocalDateTable_1716f34c-c71a-4d1e-a3e6-3768c3ada672.Date
+
+relationship 520faf56-64f7-46e4-8d1f-453896f36dca
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_BDXDate.WeekStarting
+	toColumn: LocalDateTable_878d3986-f0ab-4c40-8ee9-11a99c11b772.Date
+
+relationship 703b378a-f519-4e89-b088-23c13c71a18d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_BDXDate.WeekEnding
+	toColumn: LocalDateTable_5518caed-d4e7-4dc9-a8f7-77031818624a.Date
+
+relationship 0a0e1b92-1b64-45cf-b9a7-139cc93b7a40
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_BDXDate.FYStartDate
+	toColumn: LocalDateTable_4f63bcc1-e958-41e8-8865-0d00daa2abf7.Date
+
+relationship f7093191-3eb0-420d-b687-a0b8868b2192
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_BDXDate.MonthStart
+	toColumn: LocalDateTable_7725215a-8c10-471b-a0cd-6547dd078ce9.Date
+
+relationship eeb02438-f4e6-40ac-95e5-deff0c7e2a4c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.cancelled_date
+	toColumn: LocalDateTable_b54610e5-3d95-4027-8eb5-9793c69eab29.Date
+
+relationship bed487e1-7cbb-4547-bef0-afde7e377ab6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.policy_start_date
+	toColumn: LocalDateTable_5c29a0d5-68b5-4363-bee0-4d5418a75082.Date
+
+relationship 5484ac72-2b98-4bcc-a3c5-c21ba24d2d6e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.policy_end_date
+	toColumn: LocalDateTable_f0d461fc-578d-47af-aa4d-d20b1496375f.Date
+
+relationship 3419dbe9-5cc5-446b-81c7-e5c719122a5d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.AlignedStart
+	toColumn: LocalDateTable_68f27fd3-03fe-46ee-b95d-fb2382bf9948.Date
+
+relationship b806d774-2abd-4f93-ae97-ef4577b23d6b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.PayStart
+	toColumn: LocalDateTable_3ac2fba5-7504-4cb3-9407-a539f1df4912.Date
+
+relationship b988f0aa-fad3-4396-acb5-9af720d5a0a1
+	fromColumn: Fact_Trailer_bdx.underwritten_month_num
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship 7f918373-bc97-5020-d161-a1084dac56fe
+	isActive: false
+	fromColumn: Fact_Trailer_bdx.CancellationEffectiveDate_YearMonthNum
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 94f48be8-6dba-4ace-ba61-aa1314f06d39
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.Effective_Date
+	toColumn: LocalDateTable_84958d24-9184-4cd5-8e7b-bee3c7ca5289.Date
+
+relationship 869d3f09-a062-40c6-a134-347899963b51
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.policy_start_date
+	toColumn: LocalDateTable_337c1fc9-d41c-4a49-a6e0-f61aa2d70774.Date
+
+relationship 8368aa17-3d12-48ff-8936-6ddce4d8268c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.policy_end_date
+	toColumn: LocalDateTable_867ced7b-303a-4ec2-9767-71a3624194d1.Date
+
+relationship bf38be79-81c1-e5d6-f73f-6cb09199aa9b
+	fromColumn: Fact_Memberships_bdx.underwritten_month_num
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship ef777230-cfd1-c201-68a5-1816da346c8a
+	fromColumn: Fact_Memberships_bdx.payment_month_num
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship e9ddc48e-0fd1-1765-603b-afc1beafdb08
+	isActive: false
+	fromColumn: Fact_Memberships_bdx.CancellationEffectiveDate_YearMonthNum
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 3f8e9b94-0a49-4a11-9c75-c55b7109f0af
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.policy_start_date
+	toColumn: LocalDateTable_33bbd491-ac1b-44b0-8f92-5154ae3dd17f.Date
+
+relationship 77d8e8f3-5a37-4f36-9fc9-79c2f29b627e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.cancelled_date
+	toColumn: LocalDateTable_5a373502-537d-418f-b445-07a89f1b1404.Date
+
+relationship 8a977d70-c576-473a-aabc-971f0748dafb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.Effective_Date
+	toColumn: LocalDateTable_8af8dd7a-6d7c-418b-8775-f9446684955a.Date
+
+relationship 641a38d7-ee29-4f0d-89d7-1f4e2d17e4a3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.policy_end_date
+	toColumn: LocalDateTable_eefdb81b-92df-41cc-813c-d719ed78c6e4.Date
+
+relationship 449d2e6c-6659-4c58-a322-7c1899883626
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.AlignedStart
+	toColumn: LocalDateTable_01aa78b9-4c75-416f-8b87-35d09ba6610c.Date
+
+relationship 6f432119-894b-4d3c-8393-98f74e74395c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.PayStart
+	toColumn: LocalDateTable_a1ccb5e5-6b3f-485a-b786-c47329854c94.Date
+
+relationship b8637770-5d20-4ae5-880e-f38b29206f5f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.PayDate
+	toColumn: LocalDateTable_ad94cb93-e3d5-4258-a356-28fab483a9f4.Date
+
+relationship 849700e6-2a57-57a6-aea3-420128286d57
+	fromColumn: Fact_Vet_bdx.payment_month_num
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 39e0ff01-e3a3-eb56-06fc-d801c895d81c
+	isActive: false
+	fromColumn: Fact_Vet_bdx.CancellationEffectiveDate_YearMonthNum
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 0583704b-2e69-3268-7f6c-2a4be241619f
+	fromColumn: Fact_Vet_bdx.underwritten_month_num
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship 984720e7-9a5b-4158-c9be-0b69897553a4
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: dim_BDXDate.Date
+	toColumn: Dim_Dates.Date
+
+relationship 00a5cbde-1e2c-4ab2-a7ee-b1decfdd8405
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pl_table_EOMonth.'Date modified'
+	toColumn: LocalDateTable_7c014445-9a2e-4360-9d9c-fc916b105d53.Date
+
+relationship a280c78e-c23f-6549-d33a-1417f3f1ff6e
+	fromColumn: pl_table_EOMonth.dim_BDXDate[MonthYearNum]
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 943da132-f86c-d87f-4612-970f11271ecc
+	fromColumn: pl_table_EOMonth.dim_UWDate[MonthYearNum]
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship 7193a216-6e80-4712-aadf-a66f9b2fd547
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pa_table_EOMonth.'Date modified'
+	toColumn: LocalDateTable_3108a6f0-0539-406f-9334-d6c4a7a1342f.Date
+
+relationship 51e868cd-f026-46e2-8e5a-06b97f1b37b3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fr_table_EOMonth.'Date modified'
+	toColumn: LocalDateTable_988b78c3-512a-40ad-977c-f2804abe99af.Date
+
+relationship f9a1d327-43b7-46f8-9800-48c8ddf0f567
+	joinOnDateBehavior: datePartOnly
+	fromColumn: trailer_table_EOMonth.'Date modified'
+	toColumn: LocalDateTable_29ec19a0-3d4f-4671-859d-be351d981e59.Date
+
+relationship 0881a301-809a-4d8a-85ad-c8177554cae2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vet_table_EOMonth.'Date modified'
+	toColumn: LocalDateTable_9cf050fe-dbc9-4e50-9cd4-9e2637884b9a.Date
+
+relationship 983c6b97-3859-69f2-feb9-e0ce8d25a5dd
+	fromColumn: fr_table_EOMonth.dim_BDXDate[MonthYearNum]
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship a6bca4bc-91a2-a8d8-9d75-942f60532e24
+	fromColumn: fr_table_EOMonth.dim_UWDate[MonthYearNum]
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship 2014a22a-3689-9995-2922-1a6ed8f8a4bb
+	fromColumn: pa_table_EOMonth.dim_BDXDate[MonthYearNum]
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 381e937d-1ff4-7d84-4904-432a645d6ccc
+	fromColumn: pa_table_EOMonth.dim_UWDate[MonthYearNum]
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship 10ef5373-43d4-8fb8-0421-2ab7535a080d
+	fromColumn: trailer_table_EOMonth.dim_BDXDate[MonthYearNum]
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 7f4faf74-7551-d858-6356-ad5915421416
+	fromColumn: trailer_table_EOMonth.dim_UWDate[MonthYearNum]
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship a0c0a100-3cdc-2a7e-daf3-bf323d003a28
+	fromColumn: vet_table_EOMonth.dim_BDXDate[MonthYearNum]
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 79a00d4c-31cf-8a0d-5a2a-616c66e267d7
+	fromColumn: vet_table_EOMonth.dim_UWDate[MonthYearNum]
+	toColumn: dim_UWDate.MonthYearNum
+
+relationship b0c69ce5-6458-df5c-aabc-96e5292e8922
+	fromColumn: Fact_Trailer_bdx.payment_month_num_v2
+	toColumn: dim_BDXDate.MonthYearNum
+
+relationship 55645b6d-f549-4e79-9309-18c0b170783c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.AlignedStart
+	toColumn: LocalDateTable_0ea91fb9-2061-4471-b240-f1bb51296c82.Date
+
+relationship da53a716-430b-4a79-91aa-cc89f294b539
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.PayStart
+	toColumn: LocalDateTable_065c64a4-5e18-414b-875e-e23c7c216563.Date
+
+relationship 9ac876d5-68b0-4407-b9b8-4a40c6844c02
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.PayDate
+	toColumn: LocalDateTable_8c2ce745-79aa-4962-b6bd-ecd05049bf99.Date
+
+relationship 88af013d-d54b-45fe-b4e0-447e607d4fdc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.PayDate
+	toColumn: LocalDateTable_3a6caf07-0211-4a30-876a-64ccc0fb3cd2.Date
+
+relationship cb6023d4-f6a6-43d3-a3ff-c56a27937f82
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.cancelled_date
+	toColumn: LocalDateTable_84e78e09-de4a-4979-b8b9-6c549fa4293e.Date
+
+relationship 4ffd3e4b-89ee-4198-aa8f-220ad9af02e6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.Effective_Date
+	toColumn: LocalDateTable_fb4a59bc-738d-4fa5-92a4-b795b3fe0a6a.Date
+
+relationship 6c67560f-8c2e-4cfb-aae9-3f8e614a0edb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Vet_bdx.CancellationEffectiveDate
+	toColumn: LocalDateTable_7aa1e76c-88ca-4c05-8900-f132b580d596.Date
+
+relationship a476f23e-48c1-4308-a5b0-050af2cfc543
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Trailer_bdx.CancellationEffectiveDate
+	toColumn: LocalDateTable_38e4f693-e4cb-4778-99c3-64ff854b329c.Date
+
+relationship 21e7e68e-e9ad-45a7-91b1-445cfdc117a4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Memberships_bdx.CancellationEffectiveDate
+	toColumn: LocalDateTable_ae6fcccf-9ace-45de-8dec-31fa28cad854.Date
+

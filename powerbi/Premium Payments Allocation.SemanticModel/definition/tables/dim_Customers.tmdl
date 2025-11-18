@@ -1,0 +1,424 @@
+table dim_Customers
+	isHidden
+	lineageTag: ea542d44-d6f6-421d-9a8d-ef2d350c602c
+
+	column quote_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8c59f311-e071-47ed-a42d-7ca46bcf9176
+		summarizeBy: sum
+		sourceColumn: quote_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column policy_holder_name
+		dataType: string
+		isHidden
+		lineageTag: 506dff53-80e5-4823-a97b-ab4b9f955500
+		summarizeBy: none
+		sourceColumn: policy_holder_name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column policy_holder_last_name
+		dataType: string
+		isHidden
+		lineageTag: 5071b345-3231-4eaa-a207-d8e7c27b725f
+		summarizeBy: none
+		sourceColumn: policy_holder_last_name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column email
+		dataType: string
+		isHidden
+		lineageTag: 720921d3-2d98-47dc-ac89-554c421779d0
+		summarizeBy: none
+		sourceColumn: email
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column postcode
+		dataType: string
+		isHidden
+		lineageTag: bc6f707b-64f2-441e-9c6c-55e1c83e8376
+		summarizeBy: none
+		sourceColumn: postcode
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column phone_number
+		dataType: string
+		isHidden
+		lineageTag: 19bd1614-4c7f-4fe9-9c2e-2526b52f60f9
+		summarizeBy: none
+		sourceColumn: phone_number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_of_birth
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 04938483-fab4-445a-968b-203135b85af3
+		summarizeBy: none
+		sourceColumn: date_of_birth
+
+		variation Variation
+			isDefault
+			relationship: 8c1150ab-47ba-48be-ab6f-612b919af0d9
+			defaultHierarchy: LocalDateTable_38d78f9e-e5cb-463d-bc89-34853aff5c25.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column addr_line_1
+		dataType: string
+		isHidden
+		lineageTag: e2e4f43a-20c7-4d74-99ec-e21ac2271339
+		summarizeBy: none
+		sourceColumn: addr_line_1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column addr_line_2
+		dataType: string
+		isHidden
+		lineageTag: 66e8f104-8fb5-4396-98a6-af9beb5587b1
+		summarizeBy: none
+		sourceColumn: addr_line_2
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column addr_town
+		dataType: string
+		isHidden
+		lineageTag: f5265916-fb34-4c13-be96-23004a4440c7
+		summarizeBy: none
+		sourceColumn: addr_town
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column addr_county
+		dataType: string
+		isHidden
+		lineageTag: 6a7e75e0-471e-46c9-ba01-8e072b378976
+		summarizeBy: none
+		sourceColumn: addr_county
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_marketing_preference
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 13a946f4-2c26-464e-8800-ac223c3c6228
+		summarizeBy: none
+		sourceColumn: is_marketing_preference
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column how_did_you_hear_about_us
+		dataType: string
+		isHidden
+		lineageTag: 378f1a31-ae7d-4f00-970a-eeff87b48a47
+		summarizeBy: none
+		sourceColumn: how_did_you_hear_about_us
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column referrer_email
+		dataType: string
+		isHidden
+		lineageTag: 892d3050-eeae-4904-b505-4bf51d55f7c4
+		summarizeBy: none
+		sourceColumn: referrer_email
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_user_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b3564f26-d60c-4e09-9f62-c72d9cb6cd02
+		summarizeBy: sum
+		sourceColumn: account_user_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_holiday
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2a8e7043-ea59-43c5-aa77-50b87ca2b312
+		summarizeBy: none
+		sourceColumn: payment_holiday
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column no_horse
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 15262656-d2c8-4a48-9c6d-e498d2988281
+		summarizeBy: none
+		sourceColumn: no_horse
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column migration_is_verified
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b299b396-9fc3-4b00-bcdc-f5e333d4bd35
+		summarizeBy: none
+		sourceColumn: migration_is_verified
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column migration_is_card_active
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 19624fe8-0208-42eb-926a-7880cc367bcc
+		summarizeBy: none
+		sourceColumn: migration_is_card_active
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column majento_account_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 68b87b7c-d3eb-4370-ab6f-ba9d8d725d9e
+		summarizeBy: sum
+		sourceColumn: majento_account_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column checkout_id
+		dataType: string
+		isHidden
+		lineageTag: 5e06b522-61e1-49e3-a830-b58f1abd8c0b
+		summarizeBy: none
+		sourceColumn: checkout_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_third_party
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 77b093e7-0292-4199-8de1-dde1c6725cd7
+		summarizeBy: sum
+		sourceColumn: is_third_party
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_option_type
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c4038ee6-3bbd-4a13-8668-122b9b1b44f6
+		summarizeBy: sum
+		sourceColumn: payment_option_type
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column epoq_customer_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5e13e1d8-ca25-41ee-a2a9-2d8900a98d48
+		summarizeBy: sum
+		sourceColumn: epoq_customer_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column epoq_customer_username
+		dataType: string
+		isHidden
+		lineageTag: 8941db4d-56c2-4de3-9601-bb7832ec418a
+		summarizeBy: none
+		sourceColumn: epoq_customer_username
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column epoq_customer_password
+		dataType: string
+		isHidden
+		lineageTag: 776e7e9a-4729-47b1-ab03-36d9f8bd55c6
+		summarizeBy: none
+		sourceColumn: epoq_customer_password
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column direct_debit_shift_actioned
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d9f938a0-82d9-471c-a15f-9448da319ee9
+		summarizeBy: none
+		sourceColumn: direct_debit_shift_actioned
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dd_shift_status
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 617aa6a1-80ad-4909-8801-3d78d17b3492
+		summarizeBy: sum
+		sourceColumn: dd_shift_status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column klaviyo_id
+		dataType: string
+		isHidden
+		lineageTag: f3fca905-dd85-4410-8518-01847458b5e9
+		summarizeBy: none
+		sourceColumn: klaviyo_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column document_preference
+		dataType: string
+		isHidden
+		lineageTag: e7ef9275-9505-4f82-b685-9a7b73276c66
+		summarizeBy: none
+		sourceColumn: document_preference
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 897f5ae2-3258-4b37-b579-19d112a35e7d
+		summarizeBy: none
+		sourceColumn: created_date
+
+		variation Variation
+			isDefault
+			relationship: 81f9dba8-21c6-4342-adb4-8d1b9a2e3c58
+			defaultHierarchy: LocalDateTable_91498a6b-6fe2-4958-84c8-8dee41532555.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column updated_date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: e1e31519-4424-4515-88bc-480b0718b07f
+		summarizeBy: none
+		sourceColumn: updated_date
+
+		variation Variation
+			isDefault
+			relationship: bf341311-4284-4f05-bcb4-54a4ca735288
+			defaultHierarchy: LocalDateTable_e95b8c58-adb2-425f-a05b-00ba1fd19d45.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column customer_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b2a712e5-fe9f-46eb-a392-c5fb4fdd5ae2
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_Customers = m
+		mode: import
+		queryGroup: Dimensions
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8" = Workspaces{[workspaceId="83dce6dd-036c-44a6-a4ec-9aedf63b20c8"]}[Data],
+				    #"645fa187-92f2-4eb3-abb0-78093fcd9e2e" = #"83dce6dd-036c-44a6-a4ec-9aedf63b20c8"{[dataflowId="645fa187-92f2-4eb3-abb0-78093fcd9e2e"]}[Data],
+				    Dim_Customers_ = #"645fa187-92f2-4eb3-abb0-78093fcd9e2e"{[entity="Dim_Customers",version=""]}[Data]
+				in
+				    Dim_Customers_
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Exception
+
+	annotation PBI_NavigationStepName = Navigation
+

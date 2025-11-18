@@ -1,0 +1,348 @@
+table dim_BDXDate
+	isHidden
+	lineageTag: a420f876-2a2d-477b-b2c0-c052529cab57
+
+	column Date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: b33e5020-087b-402c-986d-860208ec8001
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: string
+		isHidden
+		lineageTag: 14d7d4fa-7441-4b19-b760-897a29e36b00
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearNumber
+		dataType: string
+		isHidden
+		lineageTag: 201f7c6f-664e-4388-9cc8-72817534a75c
+		summarizeBy: none
+		sourceColumn: YearNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterOfYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 15d9e46d-e466-457a-bef2-e5926ffd4e1b
+		summarizeBy: sum
+		sourceColumn: QuarterOfYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthOfYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d7bcad4b-d173-4563-b9b8-3a6bb4ef6e96
+		summarizeBy: sum
+		sourceColumn: MonthOfYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfMonth
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e3c10a91-93de-4b9a-9726-5288e60ea268
+		summarizeBy: sum
+		sourceColumn: DayOfMonth
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateInt
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 33cb65aa-a491-4f2f-8c6a-df8d8f50f16f
+		summarizeBy: sum
+		sourceColumn: DateInt
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		isHidden
+		lineageTag: 5e56ebdc-2165-4d8e-b099-492b16f774d5
+		summarizeBy: none
+		sourceColumn: MonthName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthInCalendar
+		dataType: string
+		isHidden
+		lineageTag: 5eb8312d-8902-4b5d-8763-aad7305c9cf8
+		summarizeBy: none
+		sourceColumn: MonthInCalendar
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterInCalendar
+		dataType: string
+		isHidden
+		lineageTag: 9104e396-a335-449b-ac22-9f60628d2604
+		summarizeBy: none
+		sourceColumn: QuarterInCalendar
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayInWeek
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e515a922-2f2c-4227-8926-0ccd822013c3
+		summarizeBy: sum
+		sourceColumn: DayInWeek
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeekName
+		dataType: string
+		isHidden
+		lineageTag: 4779405f-edf0-4bd1-a16c-aebe91a55f9a
+		summarizeBy: none
+		sourceColumn: DayOfWeekName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekStarting
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 20d3b72a-12d9-456a-8b98-f339b1f716a7
+		summarizeBy: none
+		sourceColumn: WeekStarting
+
+		variation Variation
+			isDefault
+			relationship: 520faf56-64f7-46e4-8d1f-453896f36dca
+			defaultHierarchy: LocalDateTable_878d3986-f0ab-4c40-8ee9-11a99c11b772.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column WeekEnding
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: ef03c44b-cf09-40e3-873f-f765cf923898
+		summarizeBy: none
+		sourceColumn: WeekEnding
+
+		variation Variation
+			isDefault
+			relationship: 703b378a-f519-4e89-b088-23c13c71a18d
+			defaultHierarchy: LocalDateTable_5518caed-d4e7-4dc9-a8f7-77031818624a.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9f9f7ece-3e43-4e23-8e85-81e4bb9162e1
+		summarizeBy: sum
+		sourceColumn: Week Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FYStartDate
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 40f616cc-25fa-48af-b325-04ea4a54bd17
+		summarizeBy: none
+		sourceColumn: FYStartDate
+
+		variation Variation
+			isDefault
+			relationship: 0a0e1b92-1b64-45cf-b9a7-139cc93b7a40
+			defaultHierarchy: LocalDateTable_4f63bcc1-e958-41e8-8865-0d00daa2abf7.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'FY Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a0dea8ee-b090-4f42-8ad3-83c90a6723e8
+		summarizeBy: sum
+		sourceColumn: FY Week Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthnYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f1be9904-3178-4ff0-b9c0-f865611b5fe9
+		summarizeBy: sum
+		sourceColumn: MonthnYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarternYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 37446240-86c0-40df-84fd-2dce970bcda9
+		summarizeBy: sum
+		sourceColumn: QuarternYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShortYear
+		dataType: string
+		isHidden
+		lineageTag: 14fd4f36-3956-4881-a06d-3347d7c11dbc
+		summarizeBy: none
+		sourceColumn: ShortYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FY
+		dataType: string
+		isHidden
+		lineageTag: 7ac35caf-2f26-4b86-a3e1-f43cc73c5c3b
+		summarizeBy: none
+		sourceColumn: FY
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsWorkingDay
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 72fe4bd0-2393-4439-88f4-95bf9c0760d4
+		summarizeBy: sum
+		sourceColumn: IsWorkingDay
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthStart
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: dd853469-23ff-4a28-b9cc-1d67ce620d44
+		summarizeBy: none
+		sourceColumn: MonthStart
+
+		variation Variation
+			isDefault
+			relationship: f7093191-3eb0-420d-b687-a0b8868b2192
+			defaultHierarchy: LocalDateTable_7725215a-8c10-471b-a0cd-6547dd078ce9.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MonthYearShort
+		dataType: string
+		isHidden
+		lineageTag: e80edbe1-8580-4783-9497-f8bae9eaa99e
+		summarizeBy: none
+		sourceColumn: MonthYearShort
+		sortByColumn: MonthYearNum
+
+		changedProperty = IsHidden
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthYearNum
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 90e2ce94-4b2c-4632-9fa9-2736dd46a510
+		summarizeBy: none
+		sourceColumn: MonthYearNum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_BDXDate = m
+		mode: import
+		queryGroup: Dimensions
+		source =
+				let
+				    Source = fnGenerateDates(#date(2022, 1, 1), #date(2026, 12, 31), 4),
+				    #"Inserted Start of Month" = Table.AddColumn(Source, "Start of Month", each Date.StartOfMonth([Date]), type date),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Start of Month",{{"Start of Month", "MonthStart"}}),
+				    #"Add MonthYearShort column" = Table.AddColumn(#"Renamed Columns", "MonthYearShort", each Date.ToText([Date], "MMM yy"), type text),
+				    Custom1 = Table.AddColumn(#"Add MonthYearShort column", "MonthYearNum", each Date.Year([Date]) * 100 + Date.Month([Date]), Int64.Type),
+				    #"Removed Duplicates" = Table.Distinct(Custom1, {"MonthYearNum"})
+				in
+				    #"Removed Duplicates"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

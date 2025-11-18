@@ -1,0 +1,48 @@
+table 'PA Measure Selection'
+	lineageTag: 988313cf-738a-4376-a97e-155f04cc3989
+
+	column 'PA Measure Selection'
+		lineageTag: ae2bd91c-063e-47aa-bc87-ce71bbb663f6
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'PA Measure Selection Order'
+
+		relatedColumnDetails
+			groupByColumn: 'PA Measure Selection Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PA Measure Selection Fields'
+		lineageTag: 5c38fa12-6d89-4c75-9373-f77b727cc73e
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'PA Measure Selection Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PA Measure Selection Order'
+		formatString: 0
+		lineageTag: a736e240-0eb2-4180-a8c8-f4a29a81fca7
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'PA Measure Selection' = calculated
+		mode: import
+		source =
+				{
+				    ("Net Prem", NAMEOF('_Measures'[pa_payment_total]), 0),
+				    ("IPT", NAMEOF('_Measures'[ipt_pa_payment_total]), 1),
+				    ("Comm", NAMEOF('_Measures'[commission_pa_payment_total]), 2),
+				    ("Admin", NAMEOF('_Measures'[admin_fee_pa+pl_payment_total]), 3)
+				}
+
+	annotation PBI_Id = 92cae6ee2fcb448da54b21d504ba32fb
+

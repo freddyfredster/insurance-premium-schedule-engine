@@ -1,0 +1,175 @@
+table fr_table_EOMonth
+	lineageTag: 28679149-1f21-4abc-b2ce-0f65c9941e3e
+
+	column 'Date modified'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dcae3381-541b-45b9-9986-53cabba97d8b
+		summarizeBy: none
+		sourceColumn: Date modified
+
+		variation Variation
+			isDefault
+			relationship: 51e868cd-f026-46e2-8e5a-06b97f1b37b3
+			defaultHierarchy: LocalDateTable_988b78c3-512a-40ad-977c-f2804abe99af.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column [IsGrandTotalRowTotal]
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2e2e330c-4095-40d8-af5f-7501b9310022
+		summarizeBy: none
+		sourceColumn: [IsGrandTotalRowTotal]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dim_UWDate[MonthYearShort]
+		dataType: string
+		lineageTag: 8b1851f0-8298-4970-9776-15d27949a3bf
+		summarizeBy: none
+		sourceColumn: dim_UWDate[MonthYearShort]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dim_UWDate[MonthYearNum]
+		dataType: int64
+		formatString: 0
+		lineageTag: c48b5a46-3c9e-4070-977e-084162bdb3ec
+		summarizeBy: none
+		sourceColumn: dim_UWDate[MonthYearNum]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dim_BDXDate[MonthYearShort]
+		dataType: string
+		lineageTag: c4676995-5234-4876-9f86-a0789755be35
+		summarizeBy: none
+		sourceColumn: dim_BDXDate[MonthYearShort]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column dim_BDXDate[MonthYearNum]
+		dataType: int64
+		formatString: 0
+		lineageTag: f5ed6634-87d8-4b01-8c21-f9e91d835999
+		summarizeBy: none
+		sourceColumn: dim_BDXDate[MonthYearNum]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		lineageTag: baa0231c-432a-40b8-ae5a-31d745dada52
+		summarizeBy: none
+		sourceColumn: MonthName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: string
+		lineageTag: 6a8126e9-2848-4f98-bd10-ad7387e7607f
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column [fr_payment_total]
+		dataType: double
+		lineageTag: ed373112-9c61-4c05-8e83-ca688d33da35
+		summarizeBy: sum
+		sourceColumn: [fr_payment_total]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column [ipt_fr_payment_total]
+		dataType: double
+		lineageTag: 90c02f51-cbe9-4370-bdac-1ea3383fb1dc
+		summarizeBy: sum
+		sourceColumn: [ipt_fr_payment_total]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column [commission_fr_payment_total]
+		dataType: double
+		lineageTag: 50b3a713-5e46-434d-8ffb-bb739b5b8ba2
+		summarizeBy: sum
+		sourceColumn: [commission_fr_payment_total]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column [admin_fee_fr_payment_total]
+		dataType: double
+		lineageTag: 61e1169c-054e-4346-85e7-b769d5bd719e
+		summarizeBy: sum
+		sourceColumn: [admin_fee_fr_payment_total]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fr_table_EOMonth = m
+		mode: import
+		queryGroup: 'End Of Month'
+		source =
+				let
+				    Source = #"SharePoint Connection",
+				    #"Filtered Rows" = Table.SelectRows(Source, each [Folder Path] = "https://harryh.sharepoint.com/sites/HarryHallFullTeam/Shared Documents/Power BI/3. Fracture/"),
+				    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each [Extension] = ".csv"),
+				    #"Sorted Rows" = Table.Sort(#"Filtered Rows1",{{"Date modified", Order.Descending}}),
+				    #"Kept First Rows" = Table.FirstN(#"Sorted Rows",1),
+				    #"Filtered Hidden Files1" = Table.SelectRows(#"Kept First Rows", each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File (3)", each #"Transform File (3)"([Content])),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Invoke Custom Function1", {"Date modified", "Transform File (3)"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File (3)", Table.ColumnNames(#"Transform File (3)"(#"Sample File (3)"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"[IsGrandTotalRowTotal]", type logical}, {"[fr_payment_total]", type number}, {"[ipt_fr_payment_total]", type number}, {"[commission_fr_payment_total]", type number}, {"[admin_fee_fr_payment_total]", type number}, {"dim_UWDate[MonthYearShort]", type text}, {"dim_UWDate[MonthYearNum]", Int64.Type}, {"dim_BDXDate[MonthYearShort]", type text}, {"dim_BDXDate[MonthYearNum]", Int64.Type}}),
+				    #"Filtered Rows2" = Table.SelectRows(#"Changed Type", each [#"[IsGrandTotalRowTotal]"] <> true),
+				    #"Added Custom" = Table.AddColumn(#"Filtered Rows2", "Custom", each let
+				    LastFile = Table.FirstN(#"Filtered Rows2", 1),
+				    FileDate = Record.Field(Table.First(LastFile), "Date modified"),
+				    MonthMinus1 = Date.AddMonths(Date.From(FileDate), -1),
+				    MonthName = Date.ToText(MonthMinus1, "MMMM"),
+				    Year = Date.Year(MonthMinus1)
+				in
+				    [MonthName = MonthName, Year = Year]),
+				    #"Expanded Custom" = Table.ExpandRecordColumn(#"Added Custom", "Custom", {"MonthName", "Year"}, {"MonthName", "Year"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Expanded Custom",{{"MonthName", type text}, {"Year", type text}})
+				in
+				    #"Changed Type1"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,154 @@
+model Model
+	culture: en-GB
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup Functions
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup Facts
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup Dimensions
+
+	annotation PBI_QueryGroupOrder = 4
+
+queryGroup 'Base Tables'
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup 'End Of Month'
+
+	annotation PBI_QueryGroupOrder = 5
+
+queryGroup 'End Of Month\Transform File from Public Liability'
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup 'End Of Month\Transform File from Public Liability\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'End Of Month\Transform File from Personal Accident'
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup 'End Of Month\Transform File from Personal Accident\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'SharePoint Connection'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'End Of Month\Transform File from Fracture'
+
+	annotation PBI_QueryGroupOrder = 3
+
+queryGroup 'End Of Month\Transform File from Fracture\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'End Of Month\Transform File from Trailer'
+
+	annotation PBI_QueryGroupOrder = 4
+
+queryGroup 'End Of Month\Transform File from Trailer\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'End Of Month\Transform File from Vet'
+
+	annotation PBI_QueryGroupOrder = 5
+
+queryGroup 'End Of Month\Transform File from Vet\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation PBI_QueryOrder = ["dim_Customers","dim_Memberships","fact_Cust_Payments","fnGenerateDates","Dim_Dates","_Measures","Fact_Trailer_bdx_base","Fact_Memberships_bdx_base","Fact_Vet_bbx_base","dim_UWDate","dim_BDXDate","Fact_Trailer_bdx","Fact_Memberships_bdx","Fact_Vet_bdx","Sample File (2)","Parameter2","Transform Sample File (2)","Transform File (2)","pl_table_EOMonth","pa_table_EOMonth","Sample File","Parameter1","Transform Sample File","Transform File","SharePoint Connection","fr_table_EOMonth","trailer_table_EOMonth","vet_table_EOMonth","Sample File (3)","Parameter3","Transform Sample File (3)","Transform File (3)","Sample File (4)","Parameter4","Transform Sample File (4)","Transform File (4)","Sample File (5)","Parameter5","Transform Sample File (5)","Transform File (5)","Memberships_bdx_31_08_25","Trailer_bdx_31_08_25","Vet_bdx_31_08_25"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","DevMode"]
+
+ref table fact_Cust_Payments
+ref table DateTableTemplate_b4793b4e-70d3-4777-b19b-f5ce8d6f5404
+ref table dim_Customers
+ref table LocalDateTable_38d78f9e-e5cb-463d-bc89-34853aff5c25
+ref table Dim_Dates
+ref table LocalDateTable_91498a6b-6fe2-4958-84c8-8dee41532555
+ref table LocalDateTable_e95b8c58-adb2-425f-a05b-00ba1fd19d45
+ref table _Measures
+ref table dim_Memberships
+ref table LocalDateTable_637a73f0-9a08-40c0-a9aa-367421bbd40a
+ref table LocalDateTable_b00f3301-4eed-4fb3-b380-a5240db3d98f
+ref table LocalDateTable_cade877c-05bd-4c80-a9be-5258287b38e5
+ref table LocalDateTable_7e6084fc-2821-4bec-be93-97e68f10bbb9
+ref table LocalDateTable_057a32ee-edb5-4cc8-a301-2292ca524ca1
+ref table LocalDateTable_b75ba53f-dea8-4682-aed1-ff75320733c4
+ref table LocalDateTable_1197c9af-2ff6-4419-b31a-08d02d4ee913
+ref table LocalDateTable_2d7a4fa2-acd2-4c86-b52f-696fd9934f2d
+ref table LocalDateTable_8c656c71-ad27-46c5-a306-ca7f7a72bddb
+ref table LocalDateTable_05301055-c059-45ee-a2f0-a0c9d7f4a95e
+ref table LocalDateTable_33d661fc-9d71-42af-aa67-8e43b6a46415
+ref table dim_UWDate
+ref table LocalDateTable_4c979da6-aa0a-4698-bb49-e4c5ac257015
+ref table LocalDateTable_c883f96d-8754-480b-bcc1-a78aa36d9977
+ref table LocalDateTable_99f16fc8-2097-41fe-a289-6054b110d75b
+ref table LocalDateTable_405d542b-6a9c-401f-a4e1-7a439800d7be
+ref table LocalDateTable_1716f34c-c71a-4d1e-a3e6-3768c3ada672
+ref table dim_BDXDate
+ref table LocalDateTable_878d3986-f0ab-4c40-8ee9-11a99c11b772
+ref table LocalDateTable_5518caed-d4e7-4dc9-a8f7-77031818624a
+ref table LocalDateTable_4f63bcc1-e958-41e8-8865-0d00daa2abf7
+ref table LocalDateTable_7725215a-8c10-471b-a0cd-6547dd078ce9
+ref table Fact_Trailer_bdx
+ref table LocalDateTable_b54610e5-3d95-4027-8eb5-9793c69eab29
+ref table LocalDateTable_5c29a0d5-68b5-4363-bee0-4d5418a75082
+ref table LocalDateTable_f0d461fc-578d-47af-aa4d-d20b1496375f
+ref table LocalDateTable_68f27fd3-03fe-46ee-b95d-fb2382bf9948
+ref table LocalDateTable_3ac2fba5-7504-4cb3-9407-a539f1df4912
+ref table LocalDateTable_84958d24-9184-4cd5-8e7b-bee3c7ca5289
+ref table Fact_Memberships_bdx
+ref table LocalDateTable_337c1fc9-d41c-4a49-a6e0-f61aa2d70774
+ref table LocalDateTable_867ced7b-303a-4ec2-9767-71a3624194d1
+ref table Fact_Vet_bdx
+ref table LocalDateTable_33bbd491-ac1b-44b0-8f92-5154ae3dd17f
+ref table LocalDateTable_5a373502-537d-418f-b445-07a89f1b1404
+ref table LocalDateTable_8af8dd7a-6d7c-418b-8775-f9446684955a
+ref table LocalDateTable_eefdb81b-92df-41cc-813c-d719ed78c6e4
+ref table LocalDateTable_01aa78b9-4c75-416f-8b87-35d09ba6610c
+ref table LocalDateTable_a1ccb5e5-6b3f-485a-b786-c47329854c94
+ref table LocalDateTable_ad94cb93-e3d5-4258-a356-28fab483a9f4
+ref table 'Vet Measure Selection'
+ref table 'Trailer Measure Selection'
+ref table 'PL Measure Selection'
+ref table 'PA Measure Selection'
+ref table 'FR Measure Selection'
+ref table pl_table_EOMonth
+ref table LocalDateTable_7c014445-9a2e-4360-9d9c-fc916b105d53
+ref table pa_table_EOMonth
+ref table LocalDateTable_3108a6f0-0539-406f-9334-d6c4a7a1342f
+ref table fr_table_EOMonth
+ref table LocalDateTable_988b78c3-512a-40ad-977c-f2804abe99af
+ref table trailer_table_EOMonth
+ref table LocalDateTable_29ec19a0-3d4f-4671-859d-be351d981e59
+ref table vet_table_EOMonth
+ref table LocalDateTable_9cf050fe-dbc9-4e50-9cd4-9e2637884b9a
+ref table LocalDateTable_0ea91fb9-2061-4471-b240-f1bb51296c82
+ref table LocalDateTable_065c64a4-5e18-414b-875e-e23c7c216563
+ref table LocalDateTable_8c2ce745-79aa-4962-b6bd-ecd05049bf99
+ref table LocalDateTable_3a6caf07-0211-4a30-876a-64ccc0fb3cd2
+ref table LocalDateTable_84e78e09-de4a-4979-b8b9-6c549fa4293e
+ref table LocalDateTable_fb4a59bc-738d-4fa5-92a4-b795b3fe0a6a
+ref table LocalDateTable_7aa1e76c-88ca-4c05-8900-f132b580d596
+ref table LocalDateTable_38e4f693-e4cb-4778-99c3-64ff854b329c
+ref table LocalDateTable_ae6fcccf-9ace-45de-8dec-31fa28cad854
+
+ref cultureInfo en-GB
+

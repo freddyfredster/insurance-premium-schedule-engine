@@ -1,0 +1,819 @@
+table Fact_Memberships_bdx
+	lineageTag: 43cbfd1c-3aa5-4bd1-8bd5-c34effcf1f68
+
+	column policy_start_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 340ea77c-bec4-492a-a384-c8b40785f1b7
+		summarizeBy: none
+		sourceColumn: policy_start_date
+
+		variation Variation
+			isDefault
+			relationship: 869d3f09-a062-40c6-a134-347899963b51
+			defaultHierarchy: LocalDateTable_337c1fc9-d41c-4a49-a6e0-f61aa2d70774.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column reference
+		dataType: string
+		lineageTag: 4d04167b-6084-40ee-8e8a-12e278045e52
+		summarizeBy: none
+		sourceColumn: reference
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_used
+		dataType: int64
+		formatString: 0
+		lineageTag: 358147d1-6449-4fd3-9a2c-f4088df0f225
+		summarizeBy: sum
+		sourceColumn: days_used
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_paid
+		dataType: int64
+		formatString: 0
+		lineageTag: 0bf441b9-8d86-4b9b-9ff5-e93d3c92f642
+		summarizeBy: sum
+		sourceColumn: days_paid
+
+		annotation SummarizationSetBy = Automatic
+
+	column interval
+		dataType: string
+		lineageTag: 6c3e3687-77c0-444b-b8cc-362e1deead66
+		summarizeBy: none
+		sourceColumn: interval
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: 47742b25-3662-457a-af56-b490583cd434
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column policy_end_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b99f6930-e17b-4242-bbb2-854f2649a683
+		summarizeBy: none
+		sourceColumn: policy_end_date
+
+		variation Variation
+			isDefault
+			relationship: 8368aa17-3d12-48ff-8936-6ddce4d8268c
+			defaultHierarchy: LocalDateTable_867ced7b-303a-4ec2-9767-71a3624194d1.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column IntervalMonths
+		dataType: int64
+		formatString: 0
+		lineageTag: 19e2161a-5578-4ec7-a1d6-1c6ccdfb8fe3
+		summarizeBy: sum
+		sourceColumn: IntervalMonths
+
+		annotation SummarizationSetBy = Automatic
+
+	column AlignedStart
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bb0dcfd5-ff5e-4baa-96e6-4a8a9f345852
+		summarizeBy: none
+		sourceColumn: AlignedStart
+
+		variation Variation
+			isDefault
+			relationship: 55645b6d-f549-4e79-9309-18c0b170783c
+			defaultHierarchy: LocalDateTable_0ea91fb9-2061-4471-b240-f1bb51296c82.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PayStart
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 73727573-4dbf-4e96-ac01-e8e490b130ba
+		summarizeBy: none
+		sourceColumn: PayStart
+
+		variation Variation
+			isDefault
+			relationship: da53a716-430b-4a79-91aa-cc89f294b539
+			defaultHierarchy: LocalDateTable_065c64a4-5e18-414b-875e-e23c7c216563.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column payment_month_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 12f1a1fb-9b25-4029-bb55-b5dd535d89f4
+		summarizeBy: none
+		sourceColumn: payment_month_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column underwritten_month_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 046fbe30-1d9e-4d5d-a782-02d62b6bd789
+		summarizeBy: none
+		sourceColumn: underwritten_month_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column CancellationStatus
+		dataType: string
+		lineageTag: ba91ada3-ebe4-488f-9533-a0c8f283033a
+		summarizeBy: none
+		sourceColumn: CancellationStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column InstalmentCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 14a70224-9b0b-485d-947a-88b07ff82614
+		summarizeBy: sum
+		sourceColumn: InstalmentCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column Base_Installment_Premium_PL
+		dataType: double
+		lineageTag: 3d177a61-8e3d-43f7-b113-a95161725b08
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Premium_PL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_IPT_PL
+		dataType: double
+		lineageTag: 948922b0-e6a2-4861-8511-189340399f46
+		summarizeBy: sum
+		sourceColumn: Base_Installment_IPT_PL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Premium_PA
+		dataType: double
+		lineageTag: a6dbbcac-480a-4a48-9b3a-312bae9fdfc0
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Premium_PA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_IPT_PA
+		dataType: double
+		lineageTag: 32ca272f-7083-4fd2-ac55-65b9f7671def
+		summarizeBy: sum
+		sourceColumn: Base_Installment_IPT_PA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Premium_FR
+		dataType: double
+		lineageTag: d7a987f4-973f-494f-9b21-8a8ed49a478b
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Premium_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_IPT_FR
+		dataType: double
+		lineageTag: 2f54f5ea-df08-4293-9aaa-a04432c822e4
+		summarizeBy: sum
+		sourceColumn: Base_Installment_IPT_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CancellationEffectiveDate_YearMonthNum
+		dataType: int64
+		formatString: 0
+		lineageTag: 59619c5d-643e-4857-b4c4-569f62c48e36
+		summarizeBy: sum
+		sourceColumn: CancellationEffectiveDate_YearMonthNum
+
+		annotation SummarizationSetBy = Automatic
+
+	column upgrade_instalment_count
+		dataType: int64
+		formatString: 0
+		lineageTag: fb988b5d-3922-4e64-92ae-9c12ae4fbd92
+		summarizeBy: sum
+		sourceColumn: upgrade_instalment_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column Upgrade_Installment_Premium_PL
+		dataType: double
+		lineageTag: d5a6e1c9-1534-4166-a4d6-6dc51b50949b
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Premium_PL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_IPT_PL
+		dataType: double
+		lineageTag: c64d9b31-2129-4324-ad04-e1573e95493d
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_IPT_PL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Premium_PA
+		dataType: double
+		lineageTag: 68a9fb5b-8993-4ffb-bbbd-c5a398639ac0
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Premium_PA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_IPT_PA
+		dataType: double
+		lineageTag: 5d7dc09c-3941-4d6e-b74c-125a485c4e39
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_IPT_PA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Premium_FR
+		dataType: double
+		lineageTag: af084e5d-32cd-4f9e-9bbd-bcedf46799a9
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Premium_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_IPT_FR
+		dataType: double
+		lineageTag: 1c67ba93-2794-4766-bb40-fa9a6adcc979
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_IPT_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Admin_FR
+		dataType: double
+		lineageTag: 4d12d865-f976-428d-ae23-4629539b1781
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Admin_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Commission_FR
+		dataType: double
+		lineageTag: cc761e8a-d803-477a-9c8b-8d6a20628f94
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Commission_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Admin_Generic
+		dataType: double
+		lineageTag: bc061905-55c0-42cd-beb3-0a9c81d1b86a
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Admin_Generic
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Commission_PA
+		dataType: double
+		lineageTag: 6533292f-c0d7-40f0-97f5-27124d66205d
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Commission_PA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Base_Installment_Commission_PL
+		dataType: double
+		lineageTag: 6fe0eec7-5695-4688-98f5-cc81f44f0b72
+		summarizeBy: sum
+		sourceColumn: Base_Installment_Commission_PL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Admin_FR
+		dataType: double
+		lineageTag: 40ce230d-7177-4493-8c44-d0eb3977f0aa
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Admin_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Commission_FR
+		dataType: double
+		lineageTag: 5bb774d0-19b7-4820-bea7-cf592f35e263
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Commission_FR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Admin_Generic
+		dataType: double
+		lineageTag: f0ccf97a-943f-4c57-ac3f-f3309b8439de
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Admin_Generic
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Commission_PA
+		dataType: double
+		lineageTag: 5b531e43-1f71-4237-ad26-bd47893c7ada
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Commission_PA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Upgrade_Installment_Commission_PL
+		dataType: double
+		lineageTag: f044dcc2-3e52-4e52-8601-025f87a33ae1
+		summarizeBy: sum
+		sourceColumn: Upgrade_Installment_Commission_PL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PayDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0e0e9b4f-9de5-4964-8121-0244b114d24d
+		summarizeBy: none
+		sourceColumn: PayDate
+
+		variation Variation
+			isDefault
+			relationship: 9ac876d5-68b0-4407-b9b8-4a40c6844c02
+			defaultHierarchy: LocalDateTable_8c2ce745-79aa-4962-b6bd-ecd05049bf99.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column cancelled_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b98e79f5-517b-4bdd-b6eb-fc1744fdda13
+		summarizeBy: none
+		sourceColumn: cancelled_date
+
+		variation Variation
+			isDefault
+			relationship: cb6023d4-f6a6-43d3-a3ff-c56a27937f82
+			defaultHierarchy: LocalDateTable_84e78e09-de4a-4979-b8b9-6c549fa4293e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column annual_cost
+		dataType: double
+		lineageTag: a99d76a5-867a-4c58-a7a5-5c2288fd4ca0
+		summarizeBy: sum
+		sourceColumn: annual_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ipt_pl
+		dataType: double
+		lineageTag: 49f3ad54-c1eb-45ba-8333-294cbca612b4
+		summarizeBy: sum
+		sourceColumn: ipt_pl
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ipt_pa
+		dataType: double
+		lineageTag: ffe8a1fc-6797-4996-bbbe-62b1cac82493
+		summarizeBy: sum
+		sourceColumn: ipt_pa
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column commision_on_pl
+		dataType: double
+		lineageTag: 7969cbd8-0eb7-4a19-bfcd-a0a8d159313e
+		summarizeBy: sum
+		sourceColumn: commision_on_pl
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column commision_on_pa
+		dataType: double
+		lineageTag: 16ae3b00-cea5-4b89-8801-285d8001cdfd
+		summarizeBy: sum
+		sourceColumn: commision_on_pa
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ipt_fracture
+		dataType: double
+		lineageTag: 33cb81fb-6ca0-4b10-80e8-1c3d86438d0d
+		summarizeBy: sum
+		sourceColumn: ipt_fracture
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column commission_fracture
+		dataType: double
+		lineageTag: bd561879-c4e4-4c0d-bf6e-1cf6e529915f
+		summarizeBy: sum
+		sourceColumn: commission_fracture
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column admin_fee
+		dataType: double
+		lineageTag: 1f6ae486-51e2-4f2e-9856-a137b65f6733
+		summarizeBy: sum
+		sourceColumn: admin_fee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column admin_fee_fracture
+		dataType: double
+		lineageTag: 7b1897ac-4a4c-40d6-a1b4-907a5eb11e9d
+		summarizeBy: sum
+		sourceColumn: admin_fee_fracture
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column annual_pl_premium
+		dataType: double
+		lineageTag: ff1e178a-41be-47a6-9877-899864403348
+		summarizeBy: sum
+		sourceColumn: annual_pl_premium
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column annual_pa_premium
+		dataType: double
+		lineageTag: 247c6c06-3874-4ede-9783-d51574690cca
+		summarizeBy: sum
+		sourceColumn: annual_pa_premium
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column annual_fr_premium
+		dataType: double
+		lineageTag: 9743e1f0-3796-4f61-b87e-559a6604e185
+		summarizeBy: sum
+		sourceColumn: annual_fr_premium
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Effective_Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5e761a24-277f-4d48-9f97-d65e619e5c0a
+		summarizeBy: none
+		sourceColumn: Effective_Date
+
+		variation Variation
+			isDefault
+			relationship: 4ffd3e4b-89ee-4198-aa8f-220ad9af02e6
+			defaultHierarchy: LocalDateTable_fb4a59bc-738d-4fa5-92a4-b795b3fe0a6a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 61c3215e-ed46-434a-a6c5-afdf82ad8230
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column CancellationEffectiveDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0c66bb47-70bb-4bdc-9e0b-98b07a2d746c
+		summarizeBy: none
+		sourceColumn: CancellationEffectiveDate
+
+		variation Variation
+			isDefault
+			relationship: 21e7e68e-e9ad-45a7-91b1-445cfdc117a4
+			defaultHierarchy: LocalDateTable_ae6fcccf-9ace-45de-8dec-31fa28cad854.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Fact_Memberships_bdx = m
+		mode: import
+		queryGroup: Facts
+		source = ```
+				let
+				    Source = Fact_Memberships_bdx_base,
+				
+				    // Step 1: Add interval month logic
+				    AddIntervalMonths = Table.AddColumn(Source, "IntervalMonths", each 
+				        if [interval] = "monthly" then 1 
+				        else if [interval] = "quarterly" then 3 
+				        else if [interval] = "annual" then 12 
+				        else 1, Int64.Type),
+				
+				    // Step 2: Aligned start (for upgrade payment alignment)
+				    AddAlignedStart = Table.AddColumn(
+				    AddIntervalMonths,
+				    "AlignedStart",
+				    each
+				    let
+				        base       = [policy_start_date],
+				        eff        = [Effective_Date],
+				        m          = [IntervalMonths],        // 1, 3, or 12
+				        policyEnd  = [policy_end_date],
+				
+				        // helpers
+				        MonthsBetween = (a as date, b as date) as number =>
+				            (Date.Year(b) - Date.Year(a)) * 12 + (Date.Month(b) - Date.Month(a)),
+				
+				        // month-only alignment
+				        startM     = Date.StartOfMonth(base),
+				        effM       = Date.StartOfMonth(eff),
+				        rem        = Number.Mod(MonthsBetween(startM, effM), m),
+				        isAlignedMonth = (rem = 0),
+				
+				        // original schedule on the policy-start day (Date.AddMonths auto-clamps day)
+				        originalSchedule =
+				            List.Generate(
+				                () => base,
+				                (d) => d <= policyEnd,
+				                (d) => Date.AddMonths(d, m)
+				            ),
+				
+				        // first schedule date on/after Effective_Date
+				        futurePayments = List.Select(originalSchedule, each _ >= eff),
+				        nextPayment    = if List.Count(futurePayments) = 0 then null else List.First(futurePayments),
+				
+				        // RULE:
+				        // - if effective month is aligned -> keep Effective_Date (keep its day)
+				        // - else -> next aligned schedule date (policy-start day-of-month)
+				        aligned =
+				            if isAlignedMonth then
+				                eff
+				            else if nextPayment = null then
+				                eff
+				            else
+				                nextPayment
+				    in
+				        if [type] = "Upgrade" then aligned else eff,
+				    type date
+				),
+				
+				    // Step 3: Set payment start date (aligned for upgrades)
+				    AddPayStart = Table.AddColumn(AddAlignedStart, "PayStart", each 
+				        if [type] = "Upgrade" then [AlignedStart] else [Effective_Date]
+				    ),
+				
+				    // Step 4: Generate PayDates
+				    AddPayList = Table.AddColumn(AddPayStart, "PayList", each 
+				        List.Generate(
+				            () => [PayStart],
+				            (d) => d <= [policy_end_date],
+				            (d) => Date.AddMonths(d, [IntervalMonths])
+				        )
+				    ),
+				    Expanded = Table.ExpandListColumn(AddPayList, "PayList"),
+				    Renamed = Table.RenameColumns(Expanded, {{"PayList", "PayDate"}}),
+				    #"Added Conditional Column" = Table.AddColumn(Renamed, "PayDate_temp", each if [PayDate] = null then [PayStart] else [PayDate]),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column",{"PayDate"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"PayDate_temp", "PayDate"}}),
+				    // Step 5: Add Month IDs
+				    AddPayMonth = Table.AddColumn(#"Renamed Columns", "payment_month_num", each Date.Year([PayDate]) * 100 + Date.Month([PayDate]), Int64.Type),
+				    AddUWMonth = Table.AddColumn(AddPayMonth, "underwritten_month_num", each Date.Year([policy_start_date]) * 100 + Date.Month([policy_start_date]), Int64.Type),
+				
+				    // Step 6: Add CancellationEffectiveDate per reference
+				    CancelRows = Table.SelectRows(Source, each [type] = "Cancelled"),
+				    CancelEffective = Table.SelectColumns(CancelRows, {"id", "reference", "Effective_Date"}),
+				    RenameCancel = Table.RenameColumns(CancelEffective, {{"Effective_Date", "CancellationEffectiveDate"}}),
+				    JoinCancel = Table.NestedJoin(AddUWMonth, "reference", RenameCancel, "reference", "CancelTable", JoinKind.LeftOuter),
+				    ExpandCancel = Table.ExpandTableColumn(JoinCancel, "CancelTable", {"CancellationEffectiveDate"}),
+				
+				    // Step 7: Flag cancellation status
+				    AddCancelFlag = Table.AddColumn(ExpandCancel, "CancellationStatus", each 
+				    let
+				        renewalDate = Date.AddYears([policy_start_date], 1),
+				        renewalMonthNum = Date.Year(renewalDate) * 100 + Date.Month(renewalDate),
+				        cancelMonthNum = Date.Year([CancellationEffectiveDate]) * 100 + Date.Month([CancellationEffectiveDate])
+				    in
+				        if [type] = "Cancelled" and cancelMonthNum >= renewalMonthNum then
+				            "Renewal Cancellation"
+				        else if [CancellationEffectiveDate] = null then 
+				            "No Cancellation"
+				        else if Date.Year([PayDate]) = Date.Year([CancellationEffectiveDate]) and Date.Month([PayDate]) = Date.Month([CancellationEffectiveDate]) then 
+				            "In Cancellation Month"
+				        else if [PayDate] > [CancellationEffectiveDate] then 
+				            "After Cancellation"
+				        else 
+				            "Before Cancellation"
+				),
+				
+				    // Step 8: Calculate instalment count
+				    GroupInstCount = Table.Group(
+				    AddCancelFlag,
+				    {"id", "Effective_Date", "reference", "interval", "type"},
+				    {
+				        {"InstalmentCount", each 
+				            let
+				                t        = try [type]{0} otherwise null,
+				                intvRaw  = try [interval]{0} otherwise null,
+				                intv     = if intvRaw = null then null else Text.Lower(Text.Trim(intvRaw)),
+				                count =
+				                    if t = "Cancelled" then
+				                        1
+				                    else if intv = "monthly" then
+				                        12
+				                    else if intv = "quarterly" then
+				                        4
+				                    else if intv = "annual" then
+				                        1
+				                    else
+				                    null
+				            in
+				                count,
+				            Int64.Type}
+				    }
+				),
+				    JoinInst = Table.NestedJoin(AddCancelFlag, {"reference", "type"}, GroupInstCount, {"reference", "type"}, "InstTbl", JoinKind.LeftOuter),
+				    ExpandInst = Table.ExpandTableColumn(JoinInst, "InstTbl", {"InstalmentCount"}),
+				
+				    // Step 9–11: Base instalments (PL, PA, FR)
+				    AddPremPL = Table.AddColumn(ExpandInst, "Base_Installment_Premium_PL", each if [type] = "Upgrade" or [InstalmentCount] = null or [annual_pl_premium] = null then null else [annual_pl_premium] / [InstalmentCount], type number),
+				    AddIPTPL = Table.AddColumn(AddPremPL, "Base_Installment_IPT_PL", each if [type] = "Upgrade" or [InstalmentCount] = null or [ipt_pl] = null then null else [ipt_pl] / [InstalmentCount], type number),
+				    AddPremPA = Table.AddColumn(AddIPTPL, "Base_Installment_Premium_PA", each if [type] = "Upgrade" or [InstalmentCount] = null or [annual_pa_premium] = null then null else [annual_pa_premium] / [InstalmentCount], type number),
+				    AddIPTPA = Table.AddColumn(AddPremPA, "Base_Installment_IPT_PA", each if [type] = "Upgrade" or [InstalmentCount] = null or [ipt_pa] = null then null else [ipt_pa] / [InstalmentCount], type number),
+				    AddPremFR = Table.AddColumn(AddIPTPA, "Base_Installment_Premium_FR", each if [type] = "Upgrade" or [InstalmentCount] = null or [annual_fr_premium] = null then null else [annual_fr_premium] / [InstalmentCount], type number),
+				    AddIPTFR = Table.AddColumn(AddPremFR, "Base_Installment_IPT_FR", each if [type] = "Upgrade" or [InstalmentCount] = null or [ipt_fracture] = null then null else [ipt_fracture] / [InstalmentCount], type number),
+				
+				    // Step 11b: Additional base fee/commission fields
+				    AddAdminFR = Table.AddColumn(AddIPTFR, "Base_Installment_Admin_FR", each if [type] = "Upgrade" or [InstalmentCount] = null or [admin_fee_fracture] = null then null else [admin_fee_fracture] / [InstalmentCount], type number),
+				    AddCommissionFR = Table.AddColumn(AddAdminFR, "Base_Installment_Commission_FR", each if [type] = "Upgrade" or [InstalmentCount] = null or [commission_fracture] = null then null else [commission_fracture] / [InstalmentCount], type number),
+				    AddAdminGeneric = Table.AddColumn(AddCommissionFR, "Base_Installment_Admin_Generic", each if [type] = "Upgrade" or [InstalmentCount] = null or [admin_fee] = null then null else [admin_fee] / [InstalmentCount], type number),
+				    AddCommissionPA = Table.AddColumn(AddAdminGeneric, "Base_Installment_Commission_PA", each if [type] = "Upgrade" or [InstalmentCount] = null or [commision_on_pa] = null then null else [commision_on_pa] / [InstalmentCount], type number),
+				    AddCommissionPL = Table.AddColumn(AddCommissionPA, "Base_Installment_Commission_PL", each if [type] = "Upgrade" or [InstalmentCount] = null or [commision_on_pl] = null then null else [commision_on_pl] / [InstalmentCount], type number),
+				
+				    // Step 12: Upgrade instalment counts
+				    UpgradeRows = Table.SelectRows(AddCancelFlag, each [type] = "Upgrade"),
+				    GroupUpgradeCount = Table.Group(
+				    UpgradeRows,
+				    {"id", "reference", "Effective_Date", "policy_start_date", "interval", "AlignedStart"},
+				    {
+				        {"upgrade_instalment_count", each 
+				            let
+				                firstRow   = Table.FirstN(_, 1){0},
+				                eff        = firstRow[Effective_Date],
+				                polStart   = firstRow[policy_start_date],
+				                polEnd     = firstRow[policy_end_date],
+				                interval   = firstRow[IntervalMonths],      // 1, 3, or 12
+				
+				                result =
+				                    if eff = null or polStart = null or polEnd = null or interval = null then
+				                        null
+				                    else
+				                        let
+				                            // normalize to month starts
+				                            effM     = Date.StartOfMonth(eff),
+				                            startM   = Date.StartOfMonth(polStart),
+				                            endM     = Date.StartOfMonth(polEnd),
+				
+				                            // months between two month-starts
+				                            MonthsBetween = (a as date, b as date) as number =>
+				                                (Date.Year(b) - Date.Year(a)) * 12 + (Date.Month(b) - Date.Month(a)),
+				
+				                            // how far effM is into the cycle
+				                            mDiff    = MonthsBetween(startM, effM),
+				                            rem      = Number.Mod(mDiff, interval),
+				
+				                            // round UP to the next aligned month on/after effM (month-only logic)
+				                            addToAlign    = Number.Mod(interval - rem, interval),
+				                            firstAlignedM = Date.AddMonths(effM, addToAlign),
+				
+				                            // if first aligned month is beyond policy end, still return 1 (your rule)
+				                            rawCount =
+				                                if firstAlignedM > endM then
+				                                    1
+				                                else
+				                                    Number.IntegerDivide(MonthsBetween(firstAlignedM, endM), interval) + 1,
+				
+				                            final = if rawCount < 1 then 1 else rawCount
+				                        in
+				                            if interval = 12 then 1 else final
+				            in
+				                result,
+				            Int64.Type}
+				    }
+				),
+				    JoinUpgradeCount = Table.NestedJoin(AddCommissionPL, {"reference", "Effective_Date"}, GroupUpgradeCount, {"reference", "Effective_Date"}, "UpgradeCount", JoinKind.LeftOuter),
+				    ExpandUpgrade = Table.ExpandTableColumn(JoinUpgradeCount, "UpgradeCount", {"upgrade_instalment_count"}),
+				
+				    // Step 13: Upgrade instalments
+				    AddUpgradePL = Table.AddColumn(ExpandUpgrade, "Upgrade_Installment_Premium_PL", each if [type] = "Upgrade" and [upgrade_instalment_count] <> null and [annual_pl_premium] <> null then [annual_pl_premium] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeIPTPL = Table.AddColumn(AddUpgradePL, "Upgrade_Installment_IPT_PL", each if [type] = "Upgrade" and [ipt_pl] <> null then [ipt_pl] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradePA = Table.AddColumn(AddUpgradeIPTPL, "Upgrade_Installment_Premium_PA", each if [type] = "Upgrade" and [annual_pa_premium] <> null then [annual_pa_premium] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeIPTPA = Table.AddColumn(AddUpgradePA, "Upgrade_Installment_IPT_PA", each if [type] = "Upgrade" and [ipt_pa] <> null then [ipt_pa] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeFR = Table.AddColumn(AddUpgradeIPTPA, "Upgrade_Installment_Premium_FR", each if [type] = "Upgrade" and [annual_fr_premium] <> null then [annual_fr_premium] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeIPTFR = Table.AddColumn(AddUpgradeFR, "Upgrade_Installment_IPT_FR", each if [type] = "Upgrade" and [ipt_fracture] <> null then [ipt_fracture] / [upgrade_instalment_count] else null, type number),
+				
+				    // Step 13b: Additional upgrade fee/commission fields
+				    AddUpgradeAdminFR = Table.AddColumn(AddUpgradeIPTFR, "Upgrade_Installment_Admin_FR", each if [type] = "Upgrade" and [admin_fee_fracture] <> null then [admin_fee_fracture] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeCommissionFR = Table.AddColumn(AddUpgradeAdminFR, "Upgrade_Installment_Commission_FR", each if [type] = "Upgrade" and [commission_fracture] <> null then [commission_fracture] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeAdminGeneric = Table.AddColumn(AddUpgradeCommissionFR, "Upgrade_Installment_Admin_Generic", each if [type] = "Upgrade" and [admin_fee] <> null then [admin_fee] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeCommissionPA = Table.AddColumn(AddUpgradeAdminGeneric, "Upgrade_Installment_Commission_PA", each if [type] = "Upgrade" and [commision_on_pa] <> null then [commision_on_pa] / [upgrade_instalment_count] else null, type number),
+				    AddUpgradeCommissionPL = Table.AddColumn(AddUpgradeCommissionPA, "Upgrade_Installment_Commission_PL", each if [type] = "Upgrade" and [commision_on_pl] <> null then [commision_on_pl] / [upgrade_instalment_count] else null, type number),
+				
+				    // Step 14: Final
+				    AddCancelMonthNum = Table.AddColumn(AddUpgradeCommissionPL, "CancellationEffectiveDate_YearMonthNum", each Date.Year([CancellationEffectiveDate]) * 100 + Date.Month([CancellationEffectiveDate]), Int64.Type),
+				    #"Changed Type" = Table.TransformColumnTypes(AddCancelMonthNum,{{"CancellationStatus", type text}, {"PayDate", type date}, {"PayStart", type date}, {"AlignedStart", type date}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type")
+				in
+				    #"Removed Duplicates"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

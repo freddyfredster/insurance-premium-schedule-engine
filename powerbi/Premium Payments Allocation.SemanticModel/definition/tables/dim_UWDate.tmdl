@@ -1,0 +1,353 @@
+table dim_UWDate
+	isHidden
+	lineageTag: 52f64e12-13fb-434d-8779-e617f982411e
+
+	column Date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: b5518ae3-0a3c-44ea-a210-2b41ab6eb007
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: ec44b394-68e1-434b-bd91-b55222bb3bfb
+			defaultHierarchy: LocalDateTable_4c979da6-aa0a-4698-bb49-e4c5ac257015.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: string
+		isHidden
+		lineageTag: a24f51e7-c42a-4058-9dcc-282900e6b299
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearNumber
+		dataType: string
+		isHidden
+		lineageTag: 96b7ed14-7caa-4bb4-86d7-36297e3c542b
+		summarizeBy: none
+		sourceColumn: YearNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterOfYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d07f0161-98e8-4acf-9d95-5977e28e3737
+		summarizeBy: sum
+		sourceColumn: QuarterOfYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthOfYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 686095f5-ffe1-4805-907c-f05192eb4e8e
+		summarizeBy: sum
+		sourceColumn: MonthOfYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfMonth
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0be670b6-231d-45df-86c4-0c4c941b7047
+		summarizeBy: sum
+		sourceColumn: DayOfMonth
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateInt
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f289759e-4303-48c1-ba25-787fc3333008
+		summarizeBy: sum
+		sourceColumn: DateInt
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		isHidden
+		lineageTag: c030c594-b309-452f-80d6-ebef8800eee1
+		summarizeBy: none
+		sourceColumn: MonthName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthInCalendar
+		dataType: string
+		isHidden
+		lineageTag: f4b72054-1b2a-4646-8a5c-4d0d93c7889b
+		summarizeBy: none
+		sourceColumn: MonthInCalendar
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterInCalendar
+		dataType: string
+		isHidden
+		lineageTag: 2f2225ef-f785-4431-a346-b0184ef9176f
+		summarizeBy: none
+		sourceColumn: QuarterInCalendar
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayInWeek
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b822cf0d-a69c-4490-9e9f-fa6f1da00539
+		summarizeBy: sum
+		sourceColumn: DayInWeek
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeekName
+		dataType: string
+		isHidden
+		lineageTag: b66ebdf7-8650-48eb-80f6-f3cbf1dfaba4
+		summarizeBy: none
+		sourceColumn: DayOfWeekName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekStarting
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 43bf7f53-8783-4232-bcac-562ed162bbeb
+		summarizeBy: none
+		sourceColumn: WeekStarting
+
+		variation Variation
+			isDefault
+			relationship: 6a5633e7-bc92-4951-ba65-ea9696f4f47a
+			defaultHierarchy: LocalDateTable_c883f96d-8754-480b-bcc1-a78aa36d9977.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column WeekEnding
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 641b8e9a-4d46-4661-872f-049c5ad9b691
+		summarizeBy: none
+		sourceColumn: WeekEnding
+
+		variation Variation
+			isDefault
+			relationship: 9ab049ef-1847-4bf3-80e1-e3d05a0ff38b
+			defaultHierarchy: LocalDateTable_99f16fc8-2097-41fe-a289-6054b110d75b.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d7cc8a6f-4c60-4563-975b-ee65a1d9bbac
+		summarizeBy: sum
+		sourceColumn: Week Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FYStartDate
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: ef5721dc-e40c-4da4-b545-03f2523caa34
+		summarizeBy: none
+		sourceColumn: FYStartDate
+
+		variation Variation
+			isDefault
+			relationship: 73372e55-a14f-433c-bbb0-0877d2540be2
+			defaultHierarchy: LocalDateTable_405d542b-6a9c-401f-a4e1-7a439800d7be.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'FY Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b49ab293-3902-4025-b768-6fa51f2d034f
+		summarizeBy: sum
+		sourceColumn: FY Week Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthnYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 74567ca6-92c8-466e-acc5-c7b08241336a
+		summarizeBy: sum
+		sourceColumn: MonthnYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarternYear
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0cec9f1c-6ccd-4025-ad1a-78c8812f6df3
+		summarizeBy: sum
+		sourceColumn: QuarternYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShortYear
+		dataType: string
+		isHidden
+		lineageTag: be956f6f-f437-4288-acbb-fd3bc7edb241
+		summarizeBy: none
+		sourceColumn: ShortYear
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column FY
+		dataType: string
+		isHidden
+		lineageTag: ca5ccba5-0830-4688-b4fc-a9cf6337781e
+		summarizeBy: none
+		sourceColumn: FY
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsWorkingDay
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0860d0eb-a4c5-40bf-8835-03e7b04d2c1a
+		summarizeBy: sum
+		sourceColumn: IsWorkingDay
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthStart
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 3740ee47-1fda-4084-a801-cde118e20a08
+		summarizeBy: none
+		sourceColumn: MonthStart
+
+		variation Variation
+			isDefault
+			relationship: 90fe6728-9936-41a1-a669-adacadf30178
+			defaultHierarchy: LocalDateTable_1716f34c-c71a-4d1e-a3e6-3768c3ada672.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MonthYearShort
+		dataType: string
+		isHidden
+		lineageTag: 7362b084-44fe-497e-a257-73c724bf47a3
+		summarizeBy: none
+		sourceColumn: MonthYearShort
+		sortByColumn: MonthYearNum
+
+		changedProperty = IsHidden
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthYearNum
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9f8f27ce-f018-4fc7-b9cc-c5a8e376d924
+		summarizeBy: none
+		sourceColumn: MonthYearNum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_UWDate = m
+		mode: import
+		queryGroup: Dimensions
+		source =
+				let
+				    Source = fnGenerateDates(#date(2022, 1, 1), #date(2026, 12, 31), 4),
+				    #"Inserted Start of Month" = Table.AddColumn(Source, "Start of Month", each Date.StartOfMonth([Date]), type date),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Start of Month",{{"Start of Month", "MonthStart"}}),
+				    #"Add MonthYearShort column" = Table.AddColumn(#"Renamed Columns", "MonthYearShort", each Date.ToText([Date], "MMM yy"), type text),
+				    Custom1 = Table.AddColumn(#"Add MonthYearShort column", "MonthYearNum", each Date.Year([Date]) * 100 + Date.Month([Date]), Int64.Type),
+				    #"Removed Duplicates" = Table.Distinct(Custom1, {"MonthYearNum"})
+				in
+				    #"Removed Duplicates"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
