@@ -1,0 +1,59 @@
+productA_admin_total =
+
+VAR RegularAdmin =
+    SUMX(
+        FILTER(
+            PaymentSchedule,
+            PaymentSchedule[CancellationStatus] IN {
+                "Before Cancellation",
+                "No Cancellation"
+            }
+        ),
+        PaymentSchedule[Base_Installment_Admin_Generic] +
+        PaymentSchedule[Upgrade_Installment_Admin_Generic]
+    )
+
+VAR RemainingAdmin =
+    CALCULATE(
+        SUMX(
+            FILTER(
+                PaymentSchedule,
+                PaymentSchedule[CancellationStatus] IN {
+                    "After Cancellation",
+                    "In Cancellation Month"
+                }
+                && PaymentSchedule[EventType] <> "Cancelled"
+            ),
+            PaymentSchedule[Base_Installment_Admin_Generic] +
+            PaymentSchedule[Upgrade_Installment_Admin_Generic]
+        ),
+        USERELATIONSHIP(
+            PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
+            dim_PymtDate[MonthYearNum]
+        )
+    )
+
+VAR CancelledRowAdmin =
+    CALCULATE(
+        SUMX(
+            FILTER(
+                PaymentSchedule,
+                PaymentSchedule[EventType] = "Cancelled"
+                    && PaymentSchedule[CancellationStatus] IN {
+                        "In Cancellation Month",
+                        "Renewal Cancellation"
+                    }
+            ),
+            PaymentSchedule[Base_Installment_Admin_Generic] +
+            PaymentSchedule[Upgrade_Installment_Admin_Generic]
+        ),
+        USERELATIONSHIP(
+            PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
+            dim_PymtDate[MonthYearNum]
+        )
+    )
+
+VAR LumpSum = CancelledRowAdmin + RemainingAdmin
+
+RETURN
+    RegularAdmin + LumpSum

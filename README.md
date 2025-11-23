@@ -1,59 +1,198 @@
-Insurance Premium Schedule Engine
+# insurance-premium-schedule-engine
 
-This project automates the generation of premium payment schedules for an insurance broker.
-The aim is to replace the slow, error-prone month-end process—previously taking 3–5 days of manual adjustments—with a fully automated, ultra-precise calculation engine.
+An end-to-end, anonymised **premium payment allocation engine** for insurance brokers.
 
-The solution handles the full payment lifecycle across multiple insurance products, including:
+It turns raw policy events (new business, renewals, upgrades, cancellations) into:
 
-Monthly, quarterly, and annual payment structures
+- a **clean base table**,
+- a fully **exploded payment schedule**, and
+- a **Power BI data model** with a **cohort-style matrix** showing, for each underwritten month and payment month, how much **Net Premium, Tax, Commission and Admin** is due per product.
 
-Mid-term upgrades, cancellations, and overlapping policies
+All sample data is fictitious and fully anonymised.
 
-Recalculations that must be accurate down to two decimal places
+---
 
-Allocation of payments into a cohort-style matrix (underwritten month × payment month)
+## Problem this solves
+
+In many broker environments, month-end reporting looks like this:
+
+- policies can be paid **monthly, quarterly, or annually**  
+- customers can **upgrade or cancel** mid-term  
+- there are **multiple products** per policy (Product A/B/C)  
+- premium, tax, commission and admin all have to be allocated correctly  
+- the finance team spends **days in Excel** manually adjusting schedules
+
+This project shows how to:
+
+1. Model the logic once in **Power Query + DAX**, and  
+2. Produce a **repeatable, auditable payment schedule** that can refresh automatically.
+
+---
+
+### Repository layout
+data/
+  raw/      → anonymised input (sample_policies_raw.csv)
+  clean/    → cleaned base table (sample_policies_clean.csv)
+  engine/   → exploded payment schedule (sample_payment_schedule.csv)
+
+powerquery/
+  01_raw_to_clean_base.m            → RawPolicies → CleanPolicies
+  02_generate_payment_schedule.m    → CleanPolicies → PaymentSchedule
+  functions/
+    fn_DateTable.m                  → reusable date table function
+  dimensions/
+    dim_PymtDate.m                  → payment month dimension
+    dim_UWDate.m                    → underwritten month dimension
+
+dax/
+  01_measure_selection/
+    productA_measure_selection_table.dax
+    (optional) productB/C equivalents
+  02_product_measures/
+    productA_payment_total.dax
+    productA_tax_total.dax
+    productA_comm_total.dax
+    productA_admin_total.dax
+    (templates for Product B/C)
+  03_engine_logic/
+    final_measure_template.dax
+    cancellation_logic_explainer.md
+
+docs/
+  01_overview.md
+  02_raw_data_structure.md
+  03_logic_walkthrough.md
+  04_building_the_engine.md
+  05_powerbi_model.md
+
+### Quickstart
+
+1. Open the sample in Power BI Desktop
+
+Clone this repo and open Power BI Desktop.
+
+Get Data → Text/CSV → load:
+
+data/raw/sample_policies_raw.csv as RawPolicies
+
+In Power Query:
+
+Add a blank query and paste powerquery/01_raw_to_clean_base.m → name it CleanPolicies
+
+Add another blank query and paste powerquery/02_generate_payment_schedule.m → name it PaymentSchedule
+
+Add fn_DateTable.m, dim_PymtDate.m, dim_UWDate.m from powerquery/functions and powerquery/dimensions.
+
+Close & Apply.
+
+2. Build the model
+
+In the Model view:
+
+Create relationships:
+
+dim_PymtDate[MonthYearNum] → PaymentSchedule[PaymentMonthNum] (1-* , single direction)
+
+dim_UWDate[MonthYearNum] → PaymentSchedule[UnderwrittenMonthNum] (1-* , single direction)
+
+Optionally create an inactive relationship:
+
+dim_PymtDate[MonthYearNum] → PaymentSchedule[CancellationEffectiveDate_YearMonthNum]
+
+Use USERELATIONSHIP in measures to bring remaining amounts into the cancellation month.
+
+3. Add the measures
+
+Create an empty table called _Measures:
+
+_Measures = { "placeholder" }
 
 
-✨ What This Project Delivers
+Then delete the placeholder column so the table only holds measures.
 
-🚀 Fully automated month-end payment schedules
+In _Measures, add the measures from:
 
-🔍 Accurate allocation logic built from raw transactional data
+dax/02_product_measures/productA_*.dax
 
-🔄 Consistency across 5+ insurance products
+(Optional) Duplicate them for Product B/C if you want full parity.
 
-📊 Optimised Power BI report using a hybrid approach (Power Query for heavy logic, DAX for final allocation)
+4. Create measure selection (field parameter)
 
-📁 Audit-ready Excel extract, generated automatically at a precise time window
+Create a new table in DAX from:
 
-⚡ Faster iteration cycles using snapshotting of MySQL data for validation
+dax/01_measure_selection/productA_measure_selection_table.dax
 
+Power BI will create:
 
-🛠️ Built With
+ProductA Measure Selection
 
-MySQL — raw transactional data source
+ProductA Measure Selection Fields
 
-Power BI Dataflows — centralised data ingestion and prep
+ProductA Measure Selection Order
 
-Power Query (M) — main transformation and business logic engine
+Use ProductA Measure Selection Fields as the Values field in your matrix so you can toggle between:
 
-DAX — lightweight final allocation calculations
+Net Prem
 
-Power Automate — scheduled refresh + automated Excel export for audit
+Tax
 
-Performance Analyzer & DAX Studio — performance optimisation
+Comm
 
-Power BI Desktop — reporting and modelling layer
+Admin
 
+5. Build the cohort matrix
 
-📌 Purpose of the Repository
+Add a Matrix visual.
 
-This repo exists to:
+Set:
 
-Document the architecture used to automate premium payment allocation
+Rows: dim_UWDate[MonthYearShort]
 
-Showcase the Power Query and DAX logic used to model complex insurance events
+Columns: dim_PymtDate[MonthYearShort]
 
-Provide a reference implementation for similar use cases
+Values: ProductA Measure Selection Fields
 
-Highlight how upstream logic improvements drastically improve Power BI performance
+You now have a grid:
+
+rows = the month the policy was underwritten (cohort)
+
+columns = the month the premium/tax/comm/admin is due
+
+values = one of the Product A metrics, dynamically switched via the selector.
+
+Adapting to your own environment
+
+To use this engine with your own data:
+
+Replace sample_policies_raw.csv with an extract from your policy admin or bordereaux system.
+
+Adjust the column names and rules in 01_raw_to_clean_base.m and 02_generate_payment_schedule.m.
+
+Extend the fact table with additional components if needed (fees, surcharges, different products).
+
+Use dax/03_engine_logic/final_measure_template.dax as a blueprint to create new measures.
+
+Decide whether to:
+
+keep a shared Admin component, or
+
+split it per product in Power Query and DAX.
+
+The logic is intentionally transparent so you can explain and audit how every number is calculated.
+
+### Documentation
+
+For more detail, read:
+
+docs/01_overview.md – business context
+
+docs/02_raw_data_structure.md – raw schema explanation
+
+docs/03_logic_walkthrough.md – end-to-end logic
+
+docs/04_building_the_engine.md – how to run the M scripts
+
+docs/05_powerbi_model.md – Power BI model & cohort matrix
+
+This repo is meant to be a blueprint:
+you can fork it, swap the data, adjust the rules, and end up with a robust premium allocation engine tailored to your own products.

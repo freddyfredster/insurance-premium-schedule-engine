@@ -1,0 +1,28 @@
+// Product A – field parameter acting as a measure selector.
+// Drop 'ProductA Measure Selection Fields' into your matrix Values area.
+
+ProductA Measure Selection = {
+    ("Net Prem", NAMEOF('_Measures'[productA_payment_total]), 0),
+    ("Tax",      NAMEOF('_Measures'[productA_tax_total]),     1),
+    ("Comm",     NAMEOF('_Measures'[productA_comm_total]),    2),
+    ("Admin",    NAMEOF('_Measures'[productA_admin_total]),   3)
+}
+In Power BI:
+
+Create a new table using this DAX.
+
+Power BI will generate:
+
+ProductA Measure Selection
+
+ProductA Measure Selection Fields
+
+ProductA Measure Selection Order
+
+Use ProductA Measure Selection Fields in the Values well of the matrix.
+
+For Product B and C you can either:
+
+re-use the same pattern on separate pages, or
+
+duplicate this code and point it at productB_* / productC_* measures if you create them.

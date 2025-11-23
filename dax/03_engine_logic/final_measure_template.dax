@@ -1,0 +1,82 @@
+// final_measure_template.dax
+// Generic pattern for "component" totals with cancellation lump-sum logic.
+// Replace the {{placeholders}} with your own table and column names.
+
+{{MeasureName}} =
+
+VAR RegularComponent =
+    SUMX(
+        FILTER(
+            {{FactTableName}},
+            {{FactTableName}}[CancellationStatus] IN {
+                "Before Cancellation",
+                "No Cancellation"
+            }
+        ),
+        {{FactTableName}}[{{Base_Installment_Component}}] +
+        {{FactTableName}}[{{Upgrade_Installment_Component}}]
+    )
+
+VAR RemainingComponent =
+    CALCULATE(
+        SUMX(
+            FILTER(
+                {{FactTableName}},
+                {{FactTableName}}[CancellationStatus] IN {
+                    "After Cancellation",
+                    "In Cancellation Month"
+                }
+                && {{FactTableName}}[{{EventTypeColumn}}] <> "Cancelled"
+            ),
+            {{FactTableName}}[{{Base_Installment_Component}}] +
+            {{FactTableName}}[{{Upgrade_Installment_Component}}]
+        ),
+        USERELATIONSHIP(
+            {{FactTableName}}[{{CancellationMonthKey}}],
+            {{PaymentDateDim}}[{{MonthKeyColumn}}]
+        )
+    )
+
+VAR CancelledRowComponent =
+    CALCULATE(
+        SUMX(
+            FILTER(
+                {{FactTableName}},
+                {{FactTableName}}[{{EventTypeColumn}}] = "Cancelled"
+                    && {{FactTableName}}[CancellationStatus] IN {
+                        "In Cancellation Month",
+                        "Renewal Cancellation"
+                    }
+            ),
+            {{FactTableName}}[{{Base_Installment_Component}}] +
+            {{FactTableName}}[{{Upgrade_Installment_Component}}]
+        ),
+        USERELATIONSHIP(
+            {{FactTableName}}[{{CancellationMonthKey}}],
+            {{PaymentDateDim}}[{{MonthKeyColumn}}]
+        )
+    )
+
+VAR LumpSum = CancelledRowComponent + RemainingComponent
+
+RETURN
+    RegularComponent + LumpSum
+
+
+Usage example for Product A Tax:
+
+{{MeasureName}} → productA_tax_total
+
+{{FactTableName}} → PaymentSchedule
+
+{{Base_Installment_Component}} → Base_Installment_Tax_ProductA
+
+{{Upgrade_Installment_Component}} → Upgrade_Installment_Tax_ProductA
+
+{{EventTypeColumn}} → EventType
+
+{{CancellationMonthKey}} → CancellationEffectiveDate_YearMonthNum
+
+{{PaymentDateDim}} → dim_PymtDate
+
+{{MonthKeyColumn}} → MonthYearNum
