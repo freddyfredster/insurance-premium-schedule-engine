@@ -29,42 +29,6 @@ This project shows how to:
 
 ---
 
-### Repository layout
-data/
-  raw/      → anonymised input (sample_policies_raw.csv)
-  clean/    → cleaned base table (sample_policies_clean.csv)
-  engine/   → exploded payment schedule (sample_payment_schedule.csv)
-
-powerquery/
-  01_raw_to_clean_base.m            → RawPolicies → CleanPolicies
-  02_generate_payment_schedule.m    → CleanPolicies → PaymentSchedule
-  functions/
-    fn_DateTable.m                  → reusable date table function
-  dimensions/
-    dim_PymtDate.m                  → payment month dimension
-    dim_UWDate.m                    → underwritten month dimension
-
-dax/
-  01_measure_selection/
-    productA_measure_selection_table.dax
-    (optional) productB/C equivalents
-  02_product_measures/
-    productA_payment_total.dax
-    productA_tax_total.dax
-    productA_comm_total.dax
-    productA_admin_total.dax
-    (templates for Product B/C)
-  03_engine_logic/
-    final_measure_template.dax
-    cancellation_logic_explainer.md
-
-docs/
-  01_overview.md
-  02_raw_data_structure.md
-  03_logic_walkthrough.md
-  04_building_the_engine.md
-  05_powerbi_model.md
-
 ### Quickstart
 
 1. Open the sample in Power BI Desktop
