@@ -1,15 +1,10 @@
-// dim_UWDate.m
-// Underwritten date dimension – one row per calendar month.
-//
-// Depends on fnDateTable function.
-// Adjust date range and FYStartMonth as needed.
-
 let
-    Source = fnDateTable(#date(2022, 1, 1), #date(2026, 12, 31), 4),
-
+    Source = fn_GenerateDates(#date(2022, 1, 1), #date(2026, 12, 31), 4),
+// Use the start of month as the month anchor
     #"Inserted Start of Month" =
         Table.AddColumn(Source, "MonthStart", each Date.StartOfMonth([Date]), type date),
 
+    // Short label like "Feb 24"
     #"Add MonthYearShort column" =
         Table.AddColumn(
             #"Inserted Start of Month",
@@ -18,6 +13,7 @@ let
             type text
         ),
 
+    // Numeric YYYYMM key – this is what joins to the fact table
     AddMonthYearNum =
         Table.AddColumn(
             #"Add MonthYearShort column",
@@ -26,17 +22,7 @@ let
             Int64.Type
         ),
 
-    #"Removed Duplicates" = Table.Distinct(AddMonthYearNum, {"MonthYearNum"}),
-
-    FinalSelection =
-        Table.SelectColumns(
-            #"Removed Duplicates",
-            {
-                "MonthYearNum",     // join key
-                "MonthStart",
-                "MonthYearShort"
-            }
-        )
-
+    // One row per MonthYearNum (monthly grain)
+    #"Removed Duplicates" = Table.Distinct(AddMonthYearNum, {"MonthYearNum"})
 in
-    FinalSelection
+    #"Removed Duplicates"

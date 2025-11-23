@@ -1,14 +1,6 @@
-// dim_PymtDate.m
-// Payment date dimension – one row per calendar month.
-//
-// Depends on fnDateTable function.
-// Adjust date range and FYStartMonth as needed.
-
 let
-    // Generate daily calendar first
-    Source = fnDateTable(#date(2022, 1, 1), #date(2026, 12, 31), 4),
-
-    // Use the start of month as the month anchor
+    Source = fn_GenerateDates(#date(2022, 1, 1), #date(2026, 12, 31), 4),
+// Use the start of month as the month anchor
     #"Inserted Start of Month" =
         Table.AddColumn(Source, "MonthStart", each Date.StartOfMonth([Date]), type date),
 
@@ -31,18 +23,6 @@ let
         ),
 
     // One row per MonthYearNum (monthly grain)
-    #"Removed Duplicates" = Table.Distinct(AddMonthYearNum, {"MonthYearNum"}),
-
-    // Final column selection (you can keep more if you like)
-    FinalSelection =
-        Table.SelectColumns(
-            #"Removed Duplicates",
-            {
-                "MonthYearNum",     // join key
-                "MonthStart",
-                "MonthYearShort"
-            }
-        )
-
+    #"Removed Duplicates" = Table.Distinct(AddMonthYearNum, {"MonthYearNum"})
 in
-    FinalSelection
+    #"Removed Duplicates"
