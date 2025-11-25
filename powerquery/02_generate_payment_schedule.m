@@ -1,6 +1,6 @@
 // 02_generate_payment_schedule.m
 // Purpose:
-//   Starting from the cleaned base table (one row per policy *event*),
+//   Starting from a cleaned base table (one row per policy *event*),
 //   generate a payment schedule with one row per *scheduled payment date*,
 //   including:
 //     - Payment dates aligned to frequency (monthly / quarterly / annual)
@@ -10,38 +10,147 @@
 //     - Upgrade instalments for the same components
 //
 // Assumptions:
-//   - A single PolicyID can appear multiple times (New, Renewal, Upgrade, Cancellation, etc.).
+//   - A single PolicyID can appear multiple times (New, Upgrade, Cancellation, etc.).
+//   - Optional: Renewal events exist but are OUT OF SCOPE for this 12-month engine.
 //   - Monetary columns are annualised amounts at event level:
 //       * ProductA_Premium / ProductA_TaxAmount / ProductA_Commission / ProductA_AdminFee
 //       * ProductB_Premium / ProductB_TaxAmount / ProductB_Commission
 //       * ProductC_Premium / ProductC_TaxAmount / ProductC_Commission / ProductC_AdminFee
-//   - Step 01 has already created:
-//       * [EventEffectiveDate]
-//       * [PolicyEndDate]
+//   - A previous step has already created:
+//       * [EventEffectiveDate]  (date the event takes effect)
+//       * [PolicyStartDate]     (start of the 12-month term)
+//       * [PolicyEndDate]       (end of the 12-month term)
 //
 // How to adapt to your own data:
-//   1. Replace `CleanPolicies` in the Source step with the name of your own
-//      base query (output of 01_raw_to_clean_base.m).
+//   1. Point the `Source` step at your base query/table.
 //   2. Make sure your columns are mapped to the generics used here:
-//        - [PolicyID], [TransactionType], [PolicyStartDate], [CancellationDate]
-//        - [PaymentFrequency] ("monthly", "quarterly", "annual")
-//        - Product A/B/C premiums, taxes, commissions, admin fees
-//   3. Review business rules for:
-//        - Instalment counts (monthly=12, quarterly=4, annual=1, cancellation=1)
-//        - CancellationStatus labels
-//        - Upgrade instalment logic
-//   4. Adjust or remove any sections that do not apply to your business.
+//        - [PolicyID]           : policy reference
+//        - [RecordID]           : technical row id (any unique key)
+//        - [TransactionType]    : "New", "Upgrade", "Cancellation", "Renewal", etc.
+//        - [EventEffectiveDate] : date event takes effect
+//        - [PolicyStartDate]    : start date of the policy term
+//        - [PolicyEndDate]      : end date of the policy term
+//        - [PaymentFrequency]   : "monthly", "quarterly", "annual"
+//        - [CancellationDate]   : (optional) original cancellation date
+//        - Product A/B/C premium/tax/commission/admin fee columns.
+//   3. Review two key business rules and adjust if needed:
+//        - Instalment counts (monthly=12, quarterly=4, annual=1, cancellation=1).
+//        - Upgrade instalment alignment and remaining-instalment logic.
+//   4. Keep or remove the "Renewal" filter depending on whether you want
+//      to model multi-year policies or only the first 12-month term.
 
 let
     //---------------------------------------------
-    // 0. Source: cleaned base table (one row per event)
+    // 0. Source: base table (one row per policy *event*)
     //---------------------------------------------
-    // In your model, replace `CleanPolicies` with the name of the output
-    // of Step 01 (01_raw_to_clean_base.m).
-    Source = CleanPolicies,
+    // TODO: Replace `YourBasePolicyEventsQuery` with the name of your own query
+    //       that contains one row per policy event (New, Upgrade, Cancellation, etc.)
+    Source =
+        YourBasePolicyEventsQuery,
 
-    // Keep a reference to the original base table if we need it later
-    Base = Source,
+    // Keep an explicit handle for the raw base
+    BaseRaw =
+        Source,
+
+    //---------------------------------------------
+    // 0.a (Optional): restrict scope to FIRST 12-month term
+    //---------------------------------------------
+    // Many examples only model a single policy year (no renewals).
+    // If you DO want to include renewals, comment out this step and
+    // use `BaseRaw` directly in the next section.
+    BaseNoRenewals =
+        Table.SelectRows(
+            BaseRaw,
+            each [TransactionType] <> "Renewal"
+        ),
+
+    //---------------------------------------------
+    // 0.b Enforce a single PolicyStartDate / PolicyEndDate per PolicyID
+    //---------------------------------------------
+    // For a given PolicyID:
+    //   - PolicyStartDate and PolicyEndDate should NOT change by event.
+    //   - Upgrades / Cancellations may happen, but the underlying
+    //     contract dates remain the same.
+    //
+    // To guarantee this, we:
+    //   1. Group by PolicyID.
+    //   2. Compute a canonical (fixed) start and end date per policy.
+    //   3. Join those back onto every event row.
+    //
+    // Default logic below:
+    //   - PolicyStartDate_Fixed = MIN(PolicyStartDate) for that PolicyID.
+    //   - PolicyEndDate_Fixed   = MAX(PolicyEndDate) for that PolicyID.
+    //
+    // You can customise this if your data has a different meaning.
+    PolicyBounds =
+        Table.Group(
+            BaseNoRenewals,
+            {"PolicyID"},
+            {
+                {
+                    "PolicyStartDate_Fixed",
+                    (g as table) as date =>
+                        List.Min(g[PolicyStartDate]),
+                    type date
+                },
+                {
+                    "PolicyEndDate_Fixed",
+                    (g as table) as date =>
+                        List.Max(g[PolicyEndDate]),
+                    type date
+                }
+            }
+        ),
+
+    MergeBounds =
+        Table.NestedJoin(
+            BaseNoRenewals,
+            {"PolicyID"},
+            PolicyBounds,
+            {"PolicyID"},
+            "Bounds",
+            JoinKind.LeftOuter
+        ),
+
+    ExpandBounds =
+        Table.ExpandTableColumn(
+            MergeBounds,
+            "Bounds",
+            {"PolicyStartDate_Fixed", "PolicyEndDate_Fixed"},
+            {"PolicyStartDate_Fixed", "PolicyEndDate_Fixed"}
+        ),
+
+    // Optionally keep the original dates if you want to inspect differences
+    RenameOriginalDates =
+        Table.RenameColumns(
+            ExpandBounds,
+            {
+                {"PolicyStartDate", "PolicyStartDate_Original"},
+                {"PolicyEndDate",   "PolicyEndDate_Original"}
+            }
+        ),
+
+    UseFixedPolicyDates =
+        Table.RenameColumns(
+            RenameOriginalDates,
+            {
+                {"PolicyStartDate_Fixed", "PolicyStartDate"},
+                {"PolicyEndDate_Fixed",   "PolicyEndDate"}
+            }
+        ),
+
+    // If you don't care about the original "per-event" start/end dates,
+    // you can drop them here:
+    RemoveOriginalPolicyDates =
+        Table.RemoveColumns(
+            UseFixedPolicyDates,
+            {"PolicyStartDate_Original", "PolicyEndDate_Original"}
+        ),
+
+    // From this point on, we work with `Base` which has
+    // one fixed start/end per PolicyID.
+    Base =
+        RemoveOriginalPolicyDates,
 
     //---------------------------------------------
     // Step 1: Add numeric interval months
@@ -78,12 +187,12 @@ let
     // Step 2: Aligned start date for upgrades
     //---------------------------------------------
     // Idea:
-    //   For base events (New, Renewal, etc.), the payment schedule
-    //   simply starts from EventEffectiveDate.
+    //   For base events (New, etc.), the payment schedule simply starts
+    //   from EventEffectiveDate.
     //
     //   For Upgrades, we often want to "align" their payments to the
     //   existing schedule. That means:
-    //     - If the upgrade month lines up with the policy's schedule cycle,
+    //     - If the upgrade month lines up with the policy's cycle,
     //       keep the upgrade effective date (day included).
     //     - Otherwise, start at the next scheduled payment date in the cycle.
     //
@@ -94,7 +203,7 @@ let
             "AlignedStart",
             each
                 let
-                    base       = [PolicyStartDate],
+                    baseStart  = [PolicyStartDate],
                     eff        = [EventEffectiveDate],
                     m          = [IntervalMonths],   // 1, 3, or 12
                     policyEnd  = [PolicyEndDate],
@@ -105,7 +214,7 @@ let
                         + (Date.Month(b) - Date.Month(a)),
 
                     // Work at month granularity
-                    startM     = Date.StartOfMonth(base),
+                    startM     = Date.StartOfMonth(baseStart),
                     effM       = Date.StartOfMonth(eff),
                     rem        = Number.Mod(MonthsBetween(startM, effM), m),
                     isAlignedMonth = (rem = 0),
@@ -113,14 +222,18 @@ let
                     // Original schedule on the policy-start day-of-month
                     originalSchedule =
                         List.Generate(
-                            () => base,
+                            () => baseStart,
                             (d) => d <= policyEnd,
                             (d) => Date.AddMonths(d, m)
                         ),
 
                     // First schedule date on or after EventEffectiveDate
                     futurePayments = List.Select(originalSchedule, each _ >= eff),
-                    nextPayment    = if List.Count(futurePayments) = 0 then null else List.First(futurePayments),
+                    nextPayment    =
+                        if List.Count(futurePayments) = 0 then
+                            null
+                        else
+                            List.First(futurePayments),
 
                     // RULE:
                     //   - If upgrade month is aligned to the cycle -> keep eff (day included)
@@ -160,12 +273,12 @@ let
     //---------------------------------------------
     // Step 4: Generate PayDates as a list, then expand
     //---------------------------------------------
-    // For each event row, we generate a list of payment dates from [PayStart]
+    // For each event row, generate a list of payment dates from [PayStart]
     // to [PolicyEndDate], jumping by [IntervalMonths]:
     //
     //   PayStart, PayStart + IntervalMonths, PayStart + 2*IntervalMonths, ...
     //
-    // Then we expand that list so we get one row per payment date.
+    // Then expand that list so we get one row per payment date.
     AddPayList =
         Table.AddColumn(
             AddPayStart,
@@ -189,7 +302,11 @@ let
         Table.AddColumn(
             RenamePayListToPayDate,
             "PayDate_temp",
-            each if [PayDate] = null then [PayStart] else [PayDate],
+            each
+                if [PayDate] = null then
+                    [PayStart]
+                else
+                    [PayDate],
             type date
         ),
 
@@ -270,8 +387,8 @@ let
     //---------------------------------------------
     // Step 7: Flag cancellation status per PayDate
     //---------------------------------------------
-    // This gives us a text label for each scheduled payment row that
-    // describes how it relates to the cancellation (if any).
+    // This gives a text label for each scheduled payment row describing
+    // how it relates to the cancellation (if any).
     //
     // Generic logic:
     //   - If this row itself is a cancellation event AND
@@ -280,16 +397,16 @@ let
     //   - If PayDate is in the same month as cancellation -> "In Cancellation Month"
     //   - If PayDate is strictly after cancellation       -> "After Cancellation"
     //   - Otherwise                                       -> "Before Cancellation"
-    //
-    // Adjust or simplify these labels to fit your own process.
     AddCancellationStatus =
         Table.AddColumn(
             ExpandCancelDate,
             "CancellationStatus",
             each
                 let
-                    renewalDate    = Date.AddYears([PolicyStartDate], 1),
-                    renewalMonth   = Date.Year(renewalDate) * 100 + Date.Month(renewalDate),
+                    renewalDate =
+                        Date.AddYears([PolicyStartDate], 1),
+                    renewalMonth =
+                        Date.Year(renewalDate) * 100 + Date.Month(renewalDate),
                     cancelMonthNum =
                         if [CancellationEffectiveDate] = null then
                             null
@@ -332,9 +449,6 @@ let
     //   - Else if monthly   -> 12
     //   - Else if quarterly -> 4
     //   - Else if annual    -> 1
-    //
-    // You can change these numbers if your business has different rules
-    // (e.g. 10-month terms, mid-term endorsements, etc.).
     GroupInstalmentCount =
         Table.Group(
             AddCancellationStatus,
@@ -371,7 +485,7 @@ let
             }
         ),
 
-    JoinInstCount =
+    JoinInstalmentCount =
         Table.NestedJoin(
             AddCancellationStatus,
             {"PolicyID", "TransactionType", "EventEffectiveDate"},
@@ -381,9 +495,9 @@ let
             JoinKind.LeftOuter
         ),
 
-    ExpandInstCount =
+    ExpandInstalmentCount =
         Table.ExpandTableColumn(
-            JoinInstCount,
+            JoinInstalmentCount,
             "InstTbl",
             {"InstalmentCount"},
             {"InstalmentCount"}
@@ -392,14 +506,14 @@ let
     //---------------------------------------------
     // Step 9–11: Base instalments for Products A, B, C
     //---------------------------------------------
-    // For non-Upgrade events, we split the annual amounts evenly across
+    // For non-Upgrade events, split the annual amounts evenly across
     // the expected instalment count. Upgrades are handled separately.
     //
-    // If your business rules are more complex (e.g. uneven splits), this
-    // is the place to implement them.
+    // If your business rules are more complex (e.g. uneven splits),
+    // this is the place to implement them.
     AddBasePremA =
         Table.AddColumn(
-            ExpandInstCount,
+            ExpandInstalmentCount,
             "Base_Installment_Premium_A",
             each
                 if [TransactionType] = "Upgrade"
@@ -855,9 +969,9 @@ let
             AddCancelMonthNum,
             {
                 {"CancellationStatus", type text},
-                {"PayDate", type date},
-                {"PayStart", type date},
-                {"AlignedStart", type date}
+                {"PayDate",            type date},
+                {"PayStart",           type date},
+                {"AlignedStart",       type date}
             }
         ),
 
