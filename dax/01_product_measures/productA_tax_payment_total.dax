@@ -1,0 +1,59 @@
+productA_tax_payment_total =
+VAR RegularPayments =
+    SUMX (
+        FILTER (
+            fact_PaymentSchedule,
+            fact_PaymentSchedule[CancellationStatus] IN {
+                "Before Cancellation",
+                "No Cancellation"
+            }
+        ),
+        fact_PaymentSchedule[Base_Installment_Tax_A]
+            + fact_PaymentSchedule[Upgrade_Installment_Tax_A]
+    )
+
+VAR RemainingTax =
+    CALCULATE (
+        SUMX (
+            FILTER (
+                fact_PaymentSchedule,
+                fact_PaymentSchedule[CancellationStatus] IN {
+                    "After Cancellation",
+                    "In Cancellation Month"
+                }
+                    && fact_PaymentSchedule[TransactionType] <> "Cancellation"
+            ),
+            fact_PaymentSchedule[Base_Installment_Tax_A]
+                + fact_PaymentSchedule[Upgrade_Installment_Tax_A]
+        ),
+        USERELATIONSHIP (
+            fact_PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
+            dim_PymtDate[MonthYearNum]
+        )
+    )
+
+VAR CancelledRowTax =
+    CALCULATE (
+        SUMX (
+            FILTER (
+                fact_PaymentSchedule,
+                fact_PaymentSchedule[TransactionType] = "Cancellation"
+                    && fact_PaymentSchedule[CancellationStatus] IN {
+                        "In Cancellation Month",
+                        "Renewal Cancellation"
+                    }
+            ),
+            fact_PaymentSchedule[Base_Installment_Tax_A]
+                + fact_PaymentSchedule[Upgrade_Installment_Tax_A]
+        ),
+        USERELATIONSHIP (
+            fact_PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
+            dim_PymtDate[MonthYearNum]
+        )
+    )
+
+VAR LumpSum =
+    CancelledRowTax + RemainingTax
+
+RETURN
+    RegularPayments + LumpSum
