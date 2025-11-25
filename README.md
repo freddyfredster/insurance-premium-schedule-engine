@@ -73,8 +73,6 @@ This allows creation of a matrix showing:
 ---
 
 ### **5. DAX Measures**  
-Each product (A, B, C) includes four measures:
-
 - Net Premium  
 - Tax  
 - Commission  
@@ -101,12 +99,3 @@ All measure templates are included in the `/dax` folder and can be adapted to an
 5. Adjust the DAX measures using the templates.  
 
 Once connected, the model produces a **fully automated, accurate premium schedule** that is easy to validate and audit.
-
----
-
-If you'd like, I can also prepare:
-
-- An even shorter README  
-- A business-focused (“consulting style”) version  
-- A README with icons/badges for extra GitHub polish  
-- A version formatted like an internal technical specification  
