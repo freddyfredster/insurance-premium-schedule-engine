@@ -1,59 +1,59 @@
-productA_payment_total =
-
+productA_payment_total = 
 VAR RegularPayments =
-    SUMX(
-        FILTER(
-            PaymentSchedule,
-            PaymentSchedule[CancellationStatus] IN {
+    SUMX (
+        FILTER (
+            fact_PaymentSchedule,
+            fact_PaymentSchedule[CancellationStatus] IN {
                 "Before Cancellation",
                 "No Cancellation"
             }
         ),
-        PaymentSchedule[Base_Installment_ProductA] +
-        PaymentSchedule[Upgrade_Installment_ProductA]
+        fact_PaymentSchedule[Base_Installment_Premium_A]
+            + fact_PaymentSchedule[Upgrade_Installment_Premium_A]
     )
 
 VAR RemainingPremium =
-    CALCULATE(
-        SUMX(
-            FILTER(
-                PaymentSchedule,
-                PaymentSchedule[CancellationStatus] IN {
+    CALCULATE (
+        SUMX (
+            FILTER (
+                fact_PaymentSchedule,
+                fact_PaymentSchedule[CancellationStatus] IN {
                     "After Cancellation",
                     "In Cancellation Month"
                 }
-                && PaymentSchedule[EventType] <> "Cancelled"
+                    && fact_PaymentSchedule[TransactionType] <> "Cancellation"
             ),
-            PaymentSchedule[Base_Installment_ProductA] +
-            PaymentSchedule[Upgrade_Installment_ProductA]
+            fact_PaymentSchedule[Base_Installment_Premium_A]
+                + fact_PaymentSchedule[Upgrade_Installment_Premium_A]
         ),
-        USERELATIONSHIP(
-            PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
+        USERELATIONSHIP (
+            fact_PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
             dim_PymtDate[MonthYearNum]
         )
     )
 
 VAR CancelledRowPremium =
-    CALCULATE(
-        SUMX(
-            FILTER(
-                PaymentSchedule,
-                PaymentSchedule[EventType] = "Cancelled"
-                    && PaymentSchedule[CancellationStatus] IN {
+    CALCULATE (
+        SUMX (
+            FILTER (
+                fact_PaymentSchedule,
+                fact_PaymentSchedule[TransactionType] = "Cancellation"
+                    && fact_PaymentSchedule[CancellationStatus] IN {
                         "In Cancellation Month",
                         "Renewal Cancellation"
                     }
             ),
-            PaymentSchedule[Base_Installment_ProductA] +
-            PaymentSchedule[Upgrade_Installment_ProductA]
+            fact_PaymentSchedule[Base_Installment_Premium_A]
+                + fact_PaymentSchedule[Upgrade_Installment_Premium_A]
         ),
-        USERELATIONSHIP(
-            PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
+        USERELATIONSHIP (
+            fact_PaymentSchedule[CancellationEffectiveDate_YearMonthNum],
             dim_PymtDate[MonthYearNum]
         )
     )
 
-VAR LumpSum = CancelledRowPremium + RemainingPremium
+VAR LumpSum =
+    CancelledRowPremium + RemainingPremium
 
 RETURN
     RegularPayments + LumpSum
